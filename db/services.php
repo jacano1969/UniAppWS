@@ -16,26 +16,34 @@
 /**
  * Web service local plugin template external functions and service definitions.
  *
- * @package    localicorsiappws
+ * @package    localuniappws
  * @copyright  2012 Goran Josic
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // We defined the web service functions to install.
 $functions = array(
-        'local_icorsiappws_hello' => array(
-                'classname'   => 'local_icorsiappws_external',
+        'local_uniappws_hello' => array(
+                'classname'   => 'local_uniappws_external',
                 'methodname'  => 'hello',
-                'classpath'   => 'local/icorsiappws/externallib.php',
+                'classpath'   => 'local/uniappws/externallib.php',
                 'description' => 'Return Hello, add a message parameter to print Hello, $message',
+                'type'        => 'read',
+        ),
+
+		'local_uniappws_get_username' => array(
+                'classname'   => 'local_uniappws_external',
+                'methodname'  => 'get_username',
+                'classpath'   => 'local/uniappws/externallib.php',
+                'description' => 'Given the firstname and lastname as parameters returns the username',
                 'type'        => 'read',
         )
 );
 
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
-        'iCorsi.app web service' => array(
-                'functions' => array ('local_icorsiappws_hello'),
+        'UniApp web services' => array(
+                'functions' => array ('local_uniappws_hello', 'local_uniappws_get_username'),
                 'restrictedusers' => 0,
                 'enabled'=>1,
         )
