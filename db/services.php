@@ -31,11 +31,11 @@ $functions = array(
                 'type'        => 'read',
         ),
 
-		'local_uniappws_get_username' => array(
+		'local_uniappws_get_course_list' => array(
                 'classname'   => 'local_uniappws_external',
-                'methodname'  => 'get_username',
+                'methodname'  => 'get_course_list',
                 'classpath'   => 'local/uniappws/externallib.php',
-                'description' => 'Given the firstname and lastname as parameters returns the username',
+                'description' => 'Returns the user\' course list',
                 'type'        => 'read',
         )
 );
@@ -43,7 +43,7 @@ $functions = array(
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
         'UniApp web services' => array(
-                'functions' => array ('local_uniappws_hello', 'local_uniappws_get_username'),
+                'functions' => array ('local_uniappws_hello', 'local_uniappws_get_course_list'),
                 'restrictedusers' => 0,
                 'enabled'=>1,
         )
