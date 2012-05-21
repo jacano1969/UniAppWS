@@ -31,106 +31,85 @@ class local_uniappws_external extends external_api {
 //********************************************************************************************
 
 
-//=========== hello web service ====================================================
-
-    /**
-     * Returns description of method parameters
-     * @return external_function_parameters
-     */
-    public static function hello_parameters() {
-        return new external_function_parameters(
-                array('welcomemessage' => new external_value(PARAM_TEXT, 'The welcome message. By default it is "Hello,"', VALUE_DEFAULT, 'Hello, '))
-        );
-    }
-
-    /**
-     * Returns hello message
-     * @return string Hello, message
-     */
-    public static function hello($welcomemessage = 'Hello, ') {
-        global $USER;
-
-        //Parameter validation
-        //REQUIRED
-        $params = self::validate_parameters(self::hello_parameters(),
-                array('welcomemessage' => $welcomemessage));
-
-        //Context validation
-        //OPTIONAL but in most web service it should present
-        $context = get_context_instance(CONTEXT_USER, $USER->id);
-        self::validate_context($context);
-
-        //Capability checking
-        //OPTIONAL but in most web service it should present
-        if (!has_capability('moodle/user:viewdetails', $context)) {
-            throw new moodle_exception('cannotviewprofile');
-        }
-
-        return $params['welcomemessage'] . $USER->firstname;
-    }
-
-    /**
-     * Returns description of method result value
-     * @return external_description
-     */
-    public static function hello_returns() {
-        return new external_value(PARAM_TEXT, 'The welcome message + user first name');
-    }
-
-
-//=========== get_course_list web service ====================================================
+//=========== get_course_modules web service ====================================================
 
 	/**
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function get_course_list_parameters() {
+    public static function get_course_modules_parameters() {
         return new external_function_parameters(
-                array( 'sid' => new external_value(PARAM_TEXT, 'The sid session value', VALUE_DEFAULT, '') )
+                array( 'id' => new external_value(PARAM_TEXT, 'The course id', VALUE_DEFAULT, '') )
         );
     }
 
 	/**
-     * Returns the users's course list
+     * Returns the list of modules from the course
      */
-    public static function get_course_list($sid) {
+    public static function get_course_modules($id) {
         global $USER;
-
+		
         //Parameter validation
         //REQUIRED
-        $params = self::validate_parameters(self::get_course_list_parameters(), array('sid' => $sid));
+        $params = self::validate_parameters(self::get_course_modules_parameters(), array('id' => $id));
 
         //Context validation
         //OPTIONAL but in most web service it should present
-        $context = get_context_instance(CONTEXT_USER, $USER->id);
+		$context = self::get_context_by_token($_GET['wstoken']); 
         self::validate_context($context);
 
+		$course_context = get_context_instance(CONTEXT_COURSE, $id);
+		
+		// Context checking
+		// This controll enforces the controll on the token.
+		// It checks that the token belongs to the course whose id is $id.
+		if($context != $course_context) {
+            throw new moodle_exception('invalidcourseid');
+		}
+		
         //Capability checking
         //OPTIONAL but in most web service it should present
-        if (!has_capability('moodle/user:viewdetails', $context)) {
-            throw new moodle_exception('cannotviewprofile');
+        if(!has_capability('moodle/course:view', $context)) {
+            throw new moodle_exception('usernotincourse');
         }
 		
-		$session = self::get_session($sid);	
-
-		$raw_courses = enrol_get_users_courses($session['USER']->id, true,  Null, 'visible DESC,sortorder ASC');
-		//self::dump($courses);
-		$courses = array();	
-		foreach ( $raw_courses as $course ) {
-			$courses[count($courses)] = array('id' => $course->id, 'name' => $course->fullname);
+		
+		$course_modules = get_course_mods($id);
+		$modules_list = array();
+		foreach($course_modules as $course_module) {
+			$module = self::get_module_details($course_module->id);
+			$modules_list[count($modules_list)] = array(
+				'id' => $module[0]->id,
+				'cmid' => $module[0]->cmid,
+				'course' => $module[0]->course,
+				'name' => $module[0]->name,
+				'intro' => $module[0]->intro,
+				'modname' => $module[1]->modname,
+				'visible' => $module[1]->visible,
+				'timemodified' => $module[0]->timemodified
+			);
 		}
-		return $courses;
+
+		self::addToLog($id, 0, $USER->id, 'get_course_modules');
+
+		return $modules_list;
     }
 
     /**
      * Returns description of method result value
      * @return external_description
      */
-    public static function get_course_list_returns() {
+    public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
 					new external_single_structure( array(
-						'id' => new external_value(PARAM_INT, 'course id'),
-						'name' => new external_value(PARAM_TEXT, 'course full name')
+						'id' => new external_value(PARAM_INT, 'module id'),
+						'cmid' => new external_value(PARAM_INT, 'course module id'),
+						'course' => new external_value(PARAM_INT, 'course id'),
+						'name' => new external_value(PARAM_TEXT, 'module title'),
+						'intro' => new external_value(PARAM_TEXT, 'module intro'),
+						'modname' => new external_value(PARAM_TEXT, 'module name'),
+						'visible' => new external_value(PARAM_INT, 'visibility status'),
+						'timemodified' => new external_value(PARAM_INT, 'modification time')
 					)	
 				) 
         );
@@ -141,6 +120,33 @@ class local_uniappws_external extends external_api {
 // Utility functions
 //********************************************************************************************
 //********************************************************************************************
+
+	// just a dump utility
+	private static function dump($object) {
+		print_r('<hr />');
+		print_r('<hr />');
+		print_r('dumping');
+		foreach($object as $k => $v) {
+			print_r('<hr />');
+			print_r($k);
+			print_r('<hr />');
+			print_r($v);
+			print_r('<hr />');
+			print_r('<hr />');
+			print_r('<br />');
+			print_r('<br />');
+		}
+	}
+
+	/**
+     * extracts the context
+	 * @return session object or false if the session is not valid
+     */
+    private static function get_context_by_token($token) {
+		global $DB;
+		$token_entry = $DB->get_record('external_tokens', array('token'=>$token) );
+		return get_context_instance_by_id($token_entry->contextid);
+    }
 
 	/**
      * Checks the session type and returns it
@@ -197,31 +203,39 @@ class local_uniappws_external extends external_api {
      * Unserialize serialized sessions
      * @return session object 
      */
-	
 	private static function unserializesession($serialized_string) {
 		$variables = array();
 		$a = preg_split("/(\w+)\|/", $serialized_string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		$counta = count($a);
 		for ($i = 0; $i < $counta; $i = $i+2) {
-				$variables[$a[$i]] = unserialize($a[$i+1]);
+			$variables[$a[$i]] = unserialize($a[$i+1]);
 		}
 		return $variables;
+	}	
+
+	/**
+     * Code from moodle function get_module_from_cmid
+     * @return detailed module object 
+     */
+	private static function get_module_details($cmid) {
+		global $CFG, $DB;
+		$query = "SELECT cm.*, md.name as modname FROM {course_modules} cm, {modules} md WHERE cm.id = ? AND md.id = cm.module";
+		if (!$cmrec = $DB->get_record_sql($query, array($cmid))){
+			throw new moodle_exception('invalidcoursemodule');
+		} elseif (!$modrec =$DB->get_record($cmrec->modname, array('id' => $cmrec->instance))) {
+			throw new moodle_exception('invalidcoursemodule');
+		}
+		$modrec->instance = $modrec->id;
+		$modrec->cmid = $cmrec->id;
+		$cmrec->name = $modrec->name;
+
+		return array($modrec, $cmrec);
 	}
 	
-	// just a dump utility
-	private static function dump($object) {
-		print_r('<hr />');
-		print_r('<hr />');
-		print_r('dumping');
-		foreach($object as $k => $v) {
-			print_r('<hr />');
-			print_r($k);
-			print_r('<hr />');
-			print_r($v);
-			print_r('<hr />');
-			print_r('<hr />');
-			print_r('<br />');
-			print_r('<br />');
-		}
+	/**
+     * Writes inside the log the user activity
+     */
+	private static function addToLog($courseid, $moduleid, $userid, $action){
+		add_to_log($courseid, 'uniappws', 'local_uniappws_'.$action, '', getremoteaddr() , $moduleid, $userid);
 	}
 }

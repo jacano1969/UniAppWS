@@ -16,7 +16,7 @@
 
 /**
  * Mobile App plugin related strings
- * @package   mobileapp
+ * @package   uniappws
  * @copyright 2012 elab (http://www.elearninglab.org)
  * @author    Goran Josic
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

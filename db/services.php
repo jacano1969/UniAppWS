@@ -23,19 +23,11 @@
 
 // We defined the web service functions to install.
 $functions = array(
-        'local_uniappws_hello' => array(
+		'local_uniappws_get_course_modules' => array(
                 'classname'   => 'local_uniappws_external',
-                'methodname'  => 'hello',
+                'methodname'  => 'get_course_modules',
                 'classpath'   => 'local/uniappws/externallib.php',
-                'description' => 'Return Hello, add a message parameter to print Hello, $message',
-                'type'        => 'read',
-        ),
-
-		'local_uniappws_get_course_list' => array(
-                'classname'   => 'local_uniappws_external',
-                'methodname'  => 'get_course_list',
-                'classpath'   => 'local/uniappws/externallib.php',
-                'description' => 'Returns the user\' course list',
+                'description' => 'Returns the list of modules from the course',
                 'type'        => 'read',
         )
 );
@@ -43,7 +35,7 @@ $functions = array(
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
         'UniApp web services' => array(
-                'functions' => array ('local_uniappws_hello', 'local_uniappws_get_course_list'),
+                'functions' => array ('local_uniappws_get_course_modules'),
                 'restrictedusers' => 0,
                 'enabled'=>1,
         )
