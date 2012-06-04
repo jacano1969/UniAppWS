@@ -70,9 +70,11 @@ class local_uniappws_external extends external_api {
 		
         //Capability checking
         //OPTIONAL but in most web service it should present
-        if(!has_capability('moodle/course:view', $context)) {
+        /*
+		if(!has_capability('moodle/course:view', $context)) {
             throw new moodle_exception('usernotincourse');
         }
+		*/
 		
 		
 		$course_modules = get_course_mods($id);
