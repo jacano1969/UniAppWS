@@ -39,7 +39,7 @@ class local_uniappws_external extends external_api {
      */
     public static function get_course_modules_parameters() {
         return new external_function_parameters(
-                array( 'id' => new external_value(PARAM_TEXT, 'The course id', VALUE_DEFAULT, '') )
+                array( 'id' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, '') )
         );
     }
 
@@ -56,6 +56,7 @@ class local_uniappws_external extends external_api {
         //Context validation
         //OPTIONAL but in most web service it should present
 		$context = self::get_context_by_token($_GET['wstoken']); 
+
         self::validate_context($context);
 
 		$course_context = get_context_instance(CONTEXT_COURSE, $id);
@@ -102,14 +103,14 @@ class local_uniappws_external extends external_api {
     public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
 					new external_single_structure( array(
-						'id' => new external_value(PARAM_INT, 'module id'),
-						'cmid' => new external_value(PARAM_INT, 'course module id'),
-						'course' => new external_value(PARAM_INT, 'course id'),
-						'name' => new external_value(PARAM_TEXT, 'module title'),
-						'intro' => new external_value(PARAM_TEXT, 'module intro'),
-						'modname' => new external_value(PARAM_TEXT, 'module name'),
-						'visible' => new external_value(PARAM_INT, 'visibility status'),
-						'timemodified' => new external_value(PARAM_INT, 'modification time')
+						'id' => new external_value(PARAM_INT, 'module id', true),
+						'cmid' => new external_value(PARAM_INT, 'course module id', true),
+						'course' => new external_value(PARAM_INT, 'course id', true),
+						'name' => new external_value(PARAM_TEXT, 'module title', true),
+						'intro' => new external_value(PARAM_RAW, 'module intro', false),
+						'modname' => new external_value(PARAM_TEXT, 'module name', true),
+						'visible' => new external_value(PARAM_INT, 'visibility status', true),
+						'timemodified' => new external_value(PARAM_INT, 'modification time', true)
 					)	
 				) 
         );
