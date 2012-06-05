@@ -47,7 +47,7 @@ class local_uniappws_external extends external_api {
      * Returns the list of modules from the course
      */
     public static function get_course_modules($id) {
-        global $USER;
+        global $USER, $DB;
 		
         //Parameter validation
         //REQUIRED
@@ -75,24 +75,80 @@ class local_uniappws_external extends external_api {
             throw new moodle_exception('usernotincourse');
         }
 		*/
-		
-		
-		$course_modules = get_course_mods($id);
-		$modules_list = array();
-		foreach($course_modules as $course_module) {
-			$module = self::get_module_details($course_module->id);
-			$modules_list[count($modules_list)] = array(
-				'id' => $module[0]->id,
-				'cmid' => $module[0]->cmid,
-				'course' => $module[0]->course,
-				'name' => $module[0]->name,
-				'intro' => $module[0]->intro,
-				'modname' => $module[1]->modname,
-				'visible' => $module[1]->visible,
-				'timemodified' => $module[0]->timemodified
-			);
+
+		// module extraction alternative
+		/*	
+		$forums = get_coursemodules_in_course('forum', $id);
+		foreach($forums as $forum_id => $forum) {
+			$result = coursemodule_visible_for_user($forum, $USER->id);
+			print_r($result);
+			if ( $result == 1 ){
+				echo '<hr />is visible<br /><br />'; 
+				print_r($forum);
+				echo '<hr /><br /><br />';
+			} else {
+				echo 'is not visible<hr /><br /><br />'; 
+				print_r($forum);
+				echo '<hr /><br /><br />';
+			}
 		}
 
+		self::dump($forums);
+		$course = $DB->get_record('course', array('id' => $id));
+		$forums = get_all_instances_in_course('forum', $course, $USER->id, false);
+		self::dump($forums);
+		exit;
+		*/
+		// list of possible modulenames		
+		//| assignment  |
+		//| certificate |
+		//| chat        |
+		//| choice      |
+		//| data        |
+		//| feedback    |
+		//| folder      |
+		//| forum       |
+		//| glossary    |
+		//| imscp       |
+		//| label       |
+		//| lesson      |
+		//| lti         |
+		//| page        |
+		//| quiz        |
+		//| resource    |
+		//| scorm       |
+		//| survey      |
+		//| url         |
+		//| wiki        |
+		//| workshop    |
+		$module_names = array( 'forum', );
+		/*
+		$course = $DB->get_record('course', array('id' => $id));
+		$forums = get_all_instances_in_course('forum', $course, $USER->id, false);
+		foreach($forums as $forum_id => $forum) {
+			print_r($forum);
+			echo '<hr /><br /><br />';
+		}
+		*/
+
+		$course = $DB->get_record('course', array('id' => $id));
+		$modules_list = array();
+		foreach($module_names as $module_name) {
+			// get determined type of modules
+			$course_modules = get_all_instances_in_course($module_name, $course, $USER->id);
+
+			foreach($course_modules as $course_module) {
+				$modules_list[count($modules_list)] = array(
+					'id' => $course_module->coursemodule,
+					'instanceid' => $course_module->id,
+					'courseid' => $course_module->course,
+					'modname' => $module_name,
+					'name' => $course_module->name,
+					'intro' => $course_module->intro,
+					'timemodified' => $course_module->timemodified
+				);
+			}
+		}
 		self::addToLog($id, 0, $USER->id, 'get_course_modules');
 
 		return $modules_list;
@@ -105,17 +161,16 @@ class local_uniappws_external extends external_api {
     public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
 					new external_single_structure( array(
-						'id' => new external_value(PARAM_INT, 'module id', true),
-						'cmid' => new external_value(PARAM_INT, 'course module id', true),
-						'course' => new external_value(PARAM_INT, 'course id', true),
-						'name' => new external_value(PARAM_TEXT, 'module title', true),
-						'intro' => new external_value(PARAM_RAW, 'module intro', false),
-						'modname' => new external_value(PARAM_TEXT, 'module name', true),
-						'visible' => new external_value(PARAM_INT, 'visibility status', true),
-						'timemodified' => new external_value(PARAM_INT, 'modification time', true)
-					)	
-				) 
-        );
+							'id' => new external_value(PARAM_INT, 'course module id', true),
+							'instanceid' => new external_value(PARAM_INT, 'module id', true),
+							'courseid' => new external_value(PARAM_INT, 'course id', true),
+							'modname' => new external_value(PARAM_TEXT, 'module type', true),
+							'name' => new external_value(PARAM_TEXT, 'module title', true),
+							'intro' => new external_value(PARAM_RAW, 'module intro', false),
+							'timemodified' => new external_value(PARAM_INT, 'modification time', true)
+							)	
+						) 
+					);
     }
 
 //********************************************************************************************
@@ -216,25 +271,6 @@ class local_uniappws_external extends external_api {
 		return $variables;
 	}	
 
-	/**
-     * Code from moodle function get_module_from_cmid
-     * @return detailed module object 
-     */
-	private static function get_module_details($cmid) {
-		global $CFG, $DB;
-		$query = "SELECT cm.*, md.name as modname FROM {course_modules} cm, {modules} md WHERE cm.id = ? AND md.id = cm.module";
-		if (!$cmrec = $DB->get_record_sql($query, array($cmid))){
-			throw new moodle_exception('invalidcoursemodule');
-		} elseif (!$modrec =$DB->get_record($cmrec->modname, array('id' => $cmrec->instance))) {
-			throw new moodle_exception('invalidcoursemodule');
-		}
-		$modrec->instance = $modrec->id;
-		$modrec->cmid = $cmrec->id;
-		$cmrec->name = $modrec->name;
-
-		return array($modrec, $cmrec);
-	}
-	
 	/**
      * Writes inside the log the user activity
      */
