@@ -24,9 +24,9 @@
 // We defined the web service functions to install.
 $functions = array(
 		'local_uniappws_get_course_modules' => array(
-                'classname'   => 'local_uniappws_external',
+                'classname'   => 'local_uniappws_course',
                 'methodname'  => 'get_course_modules',
-                'classpath'   => 'local/uniappws/externallib.php',
+                'classpath'   => 'local/uniappws/course/externallib.php',
                 'description' => 'Returns the list of modules from the course',
                 'type'        => 'read',
         )
