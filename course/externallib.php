@@ -139,13 +139,13 @@ class local_uniappws_course extends uniapp_external_api {
     public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
 					new external_single_structure( array(
-							'id' => new external_value(PARAM_INT, 'course module id', true),
-							'instanceid' => new external_value(PARAM_INT, 'module id', true),
-							'courseid' => new external_value(PARAM_INT, 'course id', true),
-							'modname' => new external_value(PARAM_TEXT, 'module type', true),
-							'name' => new external_value(PARAM_TEXT, 'module title', true),
-							'intro' => new external_value(PARAM_RAW, 'module intro', false),
-							'timemodified' => new external_value(PARAM_INT, 'modification time', true)
+							'id' => new external_value(PARAM_INT, 'course module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+							'instanceid' => new external_value(PARAM_INT, 'module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+							'courseid' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+							'modname' => new external_value(PARAM_TEXT, 'module type', VALUE_REQUIRED, 'mod_unknown', NULL_NOT_ALLOWED),
+							'name' => new external_value(PARAM_TEXT, 'module title', VALUE_REQUIRED, 'name_unknow', NULL_NOT_ALLOWED),
+							'intro' => new external_value(PARAM_RAW, 'module intro', VALUE_OPTIONAL),
+							'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
 							)	
 						) 
 					);
