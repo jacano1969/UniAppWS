@@ -19,8 +19,7 @@
  * @copyright  2012 eLab (http://www.elearninglab.org)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once(dirname(__FILE__)."/../uniapp_external_api.class.php");
-require_once(dirname(__FILE__)."/../util/logger.class.php");
+require_once(dirname(__FILE__).'/../config.php');
 
 class local_uniappws_course extends uniapp_external_api {
 
