@@ -20,17 +20,64 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once(dirname(__FILE__).'/../config.php');
+require_once(UNIAPP_ROOT . '/course/course.class.php');
+require_once(UNIAPP_ROOT . '/course/db/courseDB.class.php');
 
 class local_uniappws_course extends uniapp_external_api {
 
-//********************************************************************************************
-//********************************************************************************************
-// Web services
-//********************************************************************************************
-//********************************************************************************************
+ 	/**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function get_courses_by_userid_parameters() {
+        return new external_function_parameters(
+            array(
+                'userid'    => new external_value(PARAM_INT, 'user ID', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+                'startpage' => new external_value(PARAM_INT, 'start page', VALUE_DEFAULT, 0, NULL_NOT_ALLOWED),
+                'n'         => new external_value(PARAM_INT, 'page number', VALUE_DEFAULT, 10, NULL_NOT_ALLOWED)
+            )
+        );
+    }
+
+    /**
+     * Returns an array of the courses a user is enrolled
+     *
+     * @params array of userids
+     * @return array An array of arrays
+     */
+    public static function get_courses_by_userid($userid, $startpage, $n) {
+
+        $context = get_context_instance(CONTEXT_SYSTEM);
+        self::validate_context($context);
+
+        $viewhidden = false;
+        if (has_capability('moodle/course:viewhiddencourses', $context)) {
+            $viewhidden = true;
+        }
+
+        $courses = course_db::moodbile_get_courses_by_userid($userid, $viewhidden, $startpage, $n);
+
+        $returncourses = array();
+        foreach ($courses as $course) {
+            $course = new Course($course);
+            $returncourses[] = $course->get_data();
+        }
+
+        return $returncourses;
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function get_courses_by_userid_returns() {
+        return
+            new external_multiple_structure(
+                Course::get_class_structure()
+            );
+    }
 
 
-//=========== get_course_modules web service ====================================================
 
 	/**
      * Returns description of method parameters
@@ -38,19 +85,19 @@ class local_uniappws_course extends uniapp_external_api {
      */
     public static function get_course_modules_parameters() {
         return new external_function_parameters(
-                array( 'id' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, '') )
+                array( 'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, '') )
         );
     }
 
 	/**
      * Returns the list of modules from the course
      */
-    public static function get_course_modules($id) {
+    public static function get_course_modules($courseid) {
         global $USER, $DB;
 		
         //Parameter validation
         //REQUIRED
-        $params = self::validate_parameters(self::get_course_modules_parameters(), array('id' => $id));
+        $params = self::validate_parameters(self::get_course_modules_parameters(), array('courseid' => $courseid));
 
         //Context validation
         //OPTIONAL but in most web service it should present
@@ -58,11 +105,11 @@ class local_uniappws_course extends uniapp_external_api {
 
         self::validate_context($context);
 
-		$course_context = get_context_instance(CONTEXT_COURSE, $id);
+		$course_context = get_context_instance(CONTEXT_COURSE, $courseid);
 		
 		// Context checking
 		// This controll enforces the controll on the token.
-		// It checks that the token belongs to the course whose id is $id.
+		// It checks that the token belongs to the course whose id is $courseid.
 		if($context != $course_context) {
             throw new moodle_exception('invalidcourseid');
 		}
@@ -98,16 +145,7 @@ class local_uniappws_course extends uniapp_external_api {
 		//| wiki        |
 		//| workshop    |
 		$module_names = array( 'forum', );
-		/*
-		$course = $DB->get_record('course', array('id' => $id));
-		$forums = get_all_instances_in_course('forum', $course, $USER->id, false);
-		foreach($forums as $forum_id => $forum) {
-			print_r($forum);
-			echo '<hr /><br /><br />';
-		}
-		*/
-
-		$course = $DB->get_record('course', array('id' => $id));
+		$course = $DB->get_record('course', array('id' => $courseid));
 		$modules_list = array();
 		foreach($module_names as $module_name) {
 			// get determined type of modules
@@ -119,6 +157,7 @@ class local_uniappws_course extends uniapp_external_api {
 					'instanceid' => $course_module->id,
 					'courseid' => $course_module->course,
 					'modname' => $module_name,
+					'type' => $course_module->type,
 					'name' => $course_module->name,
 					'intro' => $course_module->intro,
 					'timemodified' => $course_module->timemodified
@@ -126,7 +165,7 @@ class local_uniappws_course extends uniapp_external_api {
 			}
 		}
 
-		Logger::add($id, 0, $USER->id, 'get_course_modules');
+		Logger::add($courseid, 0, $USER->id, 'get_course_modules');
 
 		return $modules_list;
     }
@@ -137,17 +176,18 @@ class local_uniappws_course extends uniapp_external_api {
      */
     public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
-					new external_single_structure( array(
-							'id' => new external_value(PARAM_INT, 'course module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-							'instanceid' => new external_value(PARAM_INT, 'module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-							'courseid' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-							'modname' => new external_value(PARAM_TEXT, 'module type', VALUE_REQUIRED, 'mod_unknown', NULL_NOT_ALLOWED),
-							'name' => new external_value(PARAM_TEXT, 'module title', VALUE_REQUIRED, 'name_unknow', NULL_NOT_ALLOWED),
-							'intro' => new external_value(PARAM_RAW, 'module intro', VALUE_OPTIONAL),
-							'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
-							)	
-						) 
-					);
+			new external_single_structure( array(
+					'id' => new external_value(PARAM_INT, 'course module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					'instanceid' => new external_value(PARAM_INT, 'module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					'courseid' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					'modname' => new external_value(PARAM_TEXT, 'module type', VALUE_REQUIRED, 'mod_unknown', NULL_NOT_ALLOWED),
+					'type' => new external_value(PARAM_TEXT, 'module title', VALUE_OPTIONAL),
+					'name' => new external_value(PARAM_TEXT, 'module title', VALUE_REQUIRED, 'name_unknow', NULL_NOT_ALLOWED),
+					'intro' => new external_value(PARAM_RAW, 'module intro', VALUE_OPTIONAL),
+					'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
+					)	
+				) 
+			);
     }
 
 }
