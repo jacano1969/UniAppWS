@@ -39,37 +39,6 @@ require_once(UNIAPP_ROOT . '/mod/forum/db/forumDB.class.php');
 class local_uniappws_forum extends uniapp_external_api {
 
     /**
-     * Makes sure user may execute functions in this context.
-     * @param object $context
-     * @return void
-     */
-    protected static function validate_context($context) {
-        global $CFG;
-        if (empty($context)) {
-            throw new invalid_parameter_exception('Context does not exist');
-        }
-
-        $rcontext = get_context_instance(CONTEXT_SYSTEM);
-
-        if ($rcontext->contextlevel == $context->contextlevel) {
-            if ($rcontext->id != $context->id) {
-                throw new restricted_context_exception();
-            }
-        } else if ($rcontext->contextlevel > $context->contextlevel) {
-            throw new restricted_context_exception();
-        } else {
-            $parents = get_parent_contexts($context);
-            if (!in_array($rcontext->id, $parents)) {
-                throw new restricted_context_exception();
-            }
-        }
-
-        if ($context->contextlevel >= CONTEXT_COURSE) {
-            list($context, $course, $cm) = get_context_info_array($context->id);
-        }
-    }
-
-    /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
