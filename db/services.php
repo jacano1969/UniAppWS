@@ -242,6 +242,15 @@ $functions = array(
 			'capabilities'=> '',
 		),
 
+		// resources
+		'local_uniappws_resource_get_resource' => array(
+			'classname'   => 'local_uniappws_resource',
+			'methodname'  => 'get_resource',
+			'classpath'   => 'local/uniappws/mod/resource/externallib.php',
+			'description' => 'Gets a resource (File resource type); required parameters: resourceid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
 );
 
 
