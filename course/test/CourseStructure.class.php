@@ -4,10 +4,22 @@ class CourseStructure {
 	
 	public $user = array();		
 	public $test_user;
+
+	public $group = array();
+	public $test_group;
+	public $test_user_group_number;
+	public $test_user_group = array();
+	public $test_group_members_number;
+
+	public $grouping = array();
+	public $test_grouping;
+
 	public $course = array();		
 	public $test_course;
+
 	public $forum = array();		
 	public $test_forum;
+
 	public $forum_discussion = array();
 	public $test_forum_discussion;
 
@@ -53,6 +65,34 @@ class CourseStructure {
 		// this user is used for testing
 		$this->test_user = $this->user[2];
 
+		$this->group = array();
+		$this->group[0] = new StdClass();
+		$this->group[0]->id = 1;
+		$this->group[0]->name = 'students';
+		$this->group[0]->description = 'This group contains all students';
+
+		$this->group[1] = new StdClass();
+		$this->group[1]->id = 2;
+		$this->group[1]->name = 'males';
+		$this->group[1]->description = 'This group contains only males';
+
+		$this->group[2] = new StdClass();
+		$this->group[2]->id = 3;
+		$this->group[2]->name = 'females';
+		$this->group[2]->description = 'This group contains only females';
+		// this group is used for testing
+		$this->test_group = $this->group[0];
+		$this->test_group_members_number = 2;
+		$this->test_user_group = array(0,2); // students and females
+
+		$this->grouping = array();
+		$this->grouping[0] = new StdClass();
+		$this->grouping[0]->id = 1;
+		$this->grouping[0]->name = 'humans';
+		$this->grouping[0]->description = 'This is the group of humans made of males and females';
+		$this->grouping[0]->groups = array($this->group[1], $this->group[2]); // males and females
+		$this->test_grouping = $this->grouping[0];
+		
 		$this->course = array();
 		$this->course[0] = new StdClass();
 		$this->course[0]->id=2;

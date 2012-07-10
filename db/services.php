@@ -168,20 +168,94 @@ $functions = array(
 			'type'		=> 'read',
 			'capabilities'=> '',
 		),
+
+		// group
+		'local_uniappws_group_get_group_by_id'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_group_by_groupid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns a group; required parameters: groupid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_users_by_groupid'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_group_members_by_groupid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the group members; required parameters: groupid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_users_by_groupingid'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_group_members_by_groupingid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the group members; required parameters: groupingid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_groups_by_courseid'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_groups_by_courseid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the groups of a course; required parameters: courseid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_groups_by_groupingid'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_groups_by_groupingid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the groups of a course; required parameters: groupingid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_user_course_groups'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_groups_by_courseid_and_userid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the groups of a course; required parameters: courseid, userid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_groupings_by_courseid'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_groupings_by_courseid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the groupings of a course; required parameters: courseid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_group_get_user_course_groupings'=> array(
+			'classname'   => 'local_uniappws_group',
+			'methodname'  => 'get_groupings_by_courseid_and_userid',
+			'classpath'   => 'local/uniappws/group/externallib.php',
+			'description' => 'Returns the groupings of a course; required parameters: courseid, userid; optional parameters: startpage, n (page number)',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
 );
 
 
 $functionlist = array();
 foreach ($functions as $key=>$value) {
-    $functionlist[] = $key;
+	$functionlist[] = $key;
 }
 
 $services = array(
    'UniApp web services'  => array(
-        'functions' => $functionlist,
-        'enabled' => 0,
-        'restrictedusers' => 0,
-    ),
+		'functions' => $functionlist,
+		'enabled' => 0,
+		'restrictedusers' => 0,
+	),
 );
 
 /*
