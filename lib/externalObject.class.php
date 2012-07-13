@@ -55,7 +55,7 @@ abstract class ExternalObject {
         }
     }
 
-    abstract public static function get_class_structure();
+    public static function get_class_structure(){}
 
     function get_data(){
         return $this->externalObject;

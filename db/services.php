@@ -251,6 +251,32 @@ $functions = array(
 			'type'		=> 'read',
 			'capabilities'=> '',
 		),
+		'local_uniappws_files_upload' => array(
+			'classname'   => 'local_uniappws_files',
+			'methodname'  => 'upload_file',
+			'classpath'   => 'local/uniappws/files/externallib.php',
+			'description' => 'Uploads a file',
+			'type'		=> 'write',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_files_get_file_url' => array(
+			'classname'   => 'local_uniappws_files',
+			'methodname'  => 'get_file_url',
+			'classpath'   => 'local/uniappws/files/externallib.php',
+			'description' => 'Returns the URL of a file',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_files_get_user_filesinfo' => array(
+			'classname'   => 'local_uniappws_files',
+			'methodname'  => 'get_user_filesinfo',
+			'classpath'   => 'local/uniappws/files/externallib.php',
+			'description' => 'Gets name and id of user files',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
 );
 
 
