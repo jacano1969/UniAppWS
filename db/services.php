@@ -1,26 +1,5 @@
 <?php
 
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * Web service local plugin template external functions and service definitions.
- *
- * @package	localuniappws
- * @copyright  2012 Goran Josic
- * @license	http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 // Web service functions to install.
 $functions = array(
 		// course
@@ -29,6 +8,13 @@ $functions = array(
 				'methodname'  => 'get_course_modules',
 				'classpath'   => 'local/uniappws/course/externallib.php',
 				'description' => 'Returns the list of modules from the course; required parameters: courseid',
+				'type'		=> 'read',
+		),
+		'local_uniappws_course_get_course_modules_count' => array(
+				'classname'   => 'local_uniappws_course',
+				'methodname'  => 'get_course_modules_count',
+				'classpath'   => 'local/uniappws/course/externallib.php',
+				'description' => 'Returns the the number of course modules for every courseid passed; required parameters: courseid (array of ids)',
 				'type'		=> 'read',
 		),
 		'local_uniappws_course_get_courses_by_userid' => array(
@@ -277,6 +263,70 @@ $functions = array(
 			'type'		=> 'read',
 			'capabilities'=> '',
 		),
+
+		// assignment
+		'local_uniappws_assign_get_assignments_by_courseid' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'get_assignments_by_courseid',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Gets course assignments; required parameters: courseid; optional parameters: startpage, n (page number)',
+			'type'        => 'read',
+			'capabilities'=> 'mod/assignment:view',
+		),
+
+		'local_uniappws_assign_get_assignment_by_id' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'get_assignment_by_assigid',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Gets an assignment by its id; required parameters: assigid',
+			'type'        => 'read',
+			'capabilities'=> 'mod/assignment:view',
+		),
+
+		'local_uniappws_assign_get_submission_by_assignid' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'get_submission_by_assigid',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Gets a submission; required parameters: assigid',
+			'type'        => 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_assign_get_submission_files' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'get_submission_files',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Gets submission files; required parameters: assigid; optional parameters: startpage, n (page number)',
+			'type'        => 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_assign_submit_online' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'submit_online_assignment',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Submits an online assignment; required parameters: assigid, data',
+			'type'        => 'write',
+			'capabilities'=> 'mod/assignment:submit',
+		),
+
+		'local_uniappws_assign_submit_singleupload' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'submit_singleupload_assignment',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Submits a singleupload assignment; required parameters: courseid, assigid, fileid',
+			'type'        => 'write',
+			'capabilities'=> 'mod/assignment:submit',
+		),
+
+		'local_uniappws_assign_submit_upload' => array(
+			'classname'   => 'local_uniappws_assignment',
+			'methodname'  => 'submit_upload_assignment',
+			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
+			'description' => 'Submits an upload assignment; required parameters: assigid, isfinal(boolean value, if true it is final submission otherwise is draft), files(array of fileids)',
+			'type'        => 'write',
+			'capabilities'=> 'mod/assignment:submit',
+		),
 );
 
 
@@ -293,30 +343,4 @@ $services = array(
 	),
 );
 
-/*
-$services = array(
-		'UniApp web services' => array(
-				'functions' => array (
-					// course
-					'local_uniappws_course_get_course_modules',
-					'local_uniappws_course_get_courses_by_userid',
-					// forum
-					'local_uniappws_forum_get_forums_by_courseid',
-					'local_uniappws_forum_get_forums_by_userid',
-					'local_uniappws_forum_get_forum_by_id',
-					'local_uniappws_forum_get_forum_discussions',
-					'local_uniappws_forum_get_discussion_by_id',
-					'local_uniappws_forum_get_forum_by_postid',
-					'local_uniappws_forum_get_forum_by_discussionid',
-					'local_uniappws_forum_get_posts_by_discussionid',
-					'local_uniappws_forum_create_discussion',
-					'local_uniappws_forum_delete_discussion',
-					'local_uniappws_forum_create_post',
-					'local_uniappws_forum_update_post',
-					'local_uniappws_forum_delete_post'
-					),
-				'restrictedusers' => 0,
-				'enabled'=>1,
-		)
-);
-*/
+?>

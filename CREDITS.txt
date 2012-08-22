@@ -14,3 +14,13 @@ The laboratory also places its competences at disposal
 for collaborations with other institutions.
 
 Goran Josic - http://www.usi.ch/en/personal-info?id=815
+
+Moodbile - http://www.moodbile.org
+This is a fork of the Moodbile project. Many thanks
+to all people that have been working on it.
+
+Where possibile UniAppWS has been kept compatible with 
+Moodbile APIs. UniAppWS drops the support for Moodle 1.9.x so 
+only Moodle 2.0 and latter versions are supported.
+There are several differences between Moodbile and UniAppWS.
+Part of this project has been developed from scratch.

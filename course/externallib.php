@@ -1,26 +1,7 @@
 <?php
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * UniApp web service 
- *
- * @package    localuniappws
- * @copyright  2012 eLab (http://www.elearninglab.org)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 require_once(dirname(__FILE__).'/../config.php');
-require_once(UNIAPP_ROOT . '/course/course.class.php');
+require_once(UNIAPP_ROOT . '/course/courseStructure.class.php');
 require_once(UNIAPP_ROOT . '/course/db/courseDB.class.php');
 
 class local_uniappws_course extends uniapp_external_api {
@@ -59,7 +40,7 @@ class local_uniappws_course extends uniapp_external_api {
 
         $returncourses = array();
         foreach ($courses as $course) {
-            $course = new Course($course);
+            $course = new CourseStructure($course);
             $returncourses[] = $course->get_data();
         }
 
@@ -73,7 +54,7 @@ class local_uniappws_course extends uniapp_external_api {
     public static function get_courses_by_userid_returns() {
         return
             new external_multiple_structure(
-                Course::get_class_structure()
+                CourseStructure::get_class_structure()
             );
     }
 
@@ -93,7 +74,7 @@ class local_uniappws_course extends uniapp_external_api {
      * Returns the list of modules from the course
      */
     public static function get_course_modules($courseid) {
-        global $USER, $DB;
+        global $USER;
 		
         //Parameter validation
         //REQUIRED
@@ -122,6 +103,15 @@ class local_uniappws_course extends uniapp_external_api {
         }
 		*/
 
+		$modules_list = self::extract_course_modules($courseid);	
+
+		Logger::add($courseid, 0, $USER->id, 'get_course_modules');
+
+		return $modules_list;
+    }
+
+	public static function extract_course_modules($courseid){
+		global $DB;
 		// list of possible modulenames		
 		//| assignment  |
 		//| certificate |
@@ -144,7 +134,7 @@ class local_uniappws_course extends uniapp_external_api {
 		//| url         |
 		//| wiki        |
 		//| workshop    |
-		$module_names = array( 'forum', );
+		$module_names = array('assignment', 'folder', 'forum', 'resource' );
 		$course = $DB->get_record('course', array('id' => $courseid));
 		$modules_list = array();
 		foreach($module_names as $module_name) {
@@ -152,23 +142,28 @@ class local_uniappws_course extends uniapp_external_api {
 			$course_modules = get_all_instances_in_course($module_name, $course, $USER->id);
 
 			foreach($course_modules as $course_module) {
-				$modules_list[count($modules_list)] = array(
-					'id' => $course_module->coursemodule,
-					'instanceid' => $course_module->id,
-					'courseid' => $course_module->course,
+				//print_r($course_module);
+				$entry = count($modules_list);
+				$modules_list[$entry] = array(
+					'id' => intval($course_module->coursemodule),
+					'instanceid' => intval($course_module->id),
+					'courseid' => intval($course_module->course),
 					'modname' => $module_name,
 					'type' => $course_module->type,
 					'name' => $course_module->name,
 					'intro' => $course_module->intro,
-					'timemodified' => $course_module->timemodified
+					'timemodified' => intval($course_module->timemodified)
 				);
+
+				// set the type for the assignment
+				if($module_name == 'assignment') {
+					$modules_list[$entry]['type'] = $course_module->assignmenttype;
+				}
 			}
 		}
 
-		Logger::add($courseid, 0, $USER->id, 'get_course_modules');
-
 		return $modules_list;
-    }
+	}
 
     /**
      * Returns description of method result value
@@ -190,4 +185,66 @@ class local_uniappws_course extends uniapp_external_api {
 			);
     }
 
+	/**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function get_course_modules_count_parameters() {
+
+        return new external_function_parameters(
+                array( 'courseid' => new external_multiple_structure (
+						new external_value(PARAM_INT, 'The course id', VALUE_DEFAULT, '')
+					)
+				)
+        );
+    }
+
+	/**
+     * Returns the list of modules from the course
+     */
+    public static function get_course_modules_count($courseids) {
+        global $USER, $DB;
+			
+        //Parameter validation
+        //REQUIRED
+        $params = self::validate_parameters(self::get_course_modules_count_parameters(), array('courseid' => $courseids));
+
+        //Context validation
+        //OPTIONAL but in most web service it should present
+		$context = self::get_context_by_token($_GET['wstoken']); 
+
+        self::validate_context($context);
+		
+		$modules_count = array();
+		foreach($courseids as $courseid) {
+			$count = array();
+			// set the course id
+			$count['id'] = $courseid;	
+
+			// set the modulescount
+			$modules = self::extract_course_modules($courseid);
+			$count['modulescount'] = count($modules);
+
+			// store count
+			array_push($modules_count, $count);
+		}
+		return $modules_count;
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function get_course_modules_count_returns() {
+		return new external_multiple_structure( 
+			new external_single_structure( array(
+					'id' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					'modulescount' => new external_value(PARAM_INT, 'module count', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					)	
+				) 
+			);
+    }
+
 }
+
+?>

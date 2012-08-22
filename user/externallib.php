@@ -1,40 +1,11 @@
 <?php
-// This file is part of Moodbile -- http://moodbile.org
-//
-// Moodbile is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodbile is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodbile.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * External user API
- *
- * @package     MoodbileServer
- * @subpackage  User
- * @copyright   2010 Maria José Casañ, Marc Alier, Jordi Piguillem, Nikolas Galanis
- * @copyright   2010 Universitat Politecnica de Catalunya - Barcelona Tech http://www.upc.edu
- *
- * @author      Jordi Piguillem
- * @author      Nikolas Galanis
- * @author      Oscar Martinez Llobet
- *
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
 require_once(dirname(__FILE__).'/../config.php');
-require_once(UNIAPP_ROOT . '/user/user.class.php');
+require_once(UNIAPP_ROOT . '/user/userStructure.class.php');
 require_once(UNIAPP_ROOT . '/user/db/userDB.class.php');
 require_once(UNIAPP_ROOT . '/lib.php');
 
@@ -68,7 +39,7 @@ class local_uniappws_user extends uniapp_external_api {
             $user->avatar = get_link(new user_picture($user));
         }
 
-        $user = new User($user);
+        $user = new UserStructure($user);
         $user = $user->get_data();
 
         return $user;
@@ -79,7 +50,7 @@ class local_uniappws_user extends uniapp_external_api {
      * @return external_description
      */
     public static function get_user_returns() {
-        return User::get_class_structure();
+        return UserStructure::get_class_structure();
     }
 
 
@@ -120,7 +91,7 @@ class local_uniappws_user extends uniapp_external_api {
 
         }
 
-        $user = new User($user);
+        $user = new UserStructure($user);
         $user = $user->get_data();
         return $user;
     }
@@ -130,7 +101,7 @@ class local_uniappws_user extends uniapp_external_api {
      * @return external_description
      */
     public static function get_user_by_userid_returns() {
-        return User::get_class_structure();
+        return UserStructure::get_class_structure();
     }
 
     /**
@@ -167,7 +138,7 @@ class local_uniappws_user extends uniapp_external_api {
             $user->avatar = get_link(new user_picture($user));
         }
 
-        $user = new User($user);
+        $user = new UserStructure($user);
         $user = $user->get_data();
         return $user;
     }
@@ -177,7 +148,7 @@ class local_uniappws_user extends uniapp_external_api {
      * @return external_description
      */
     public static function get_user_by_username_returns() {
-        return User::get_class_structure();
+        return UserStructure::get_class_structure();
     }
 
 
@@ -211,7 +182,7 @@ class local_uniappws_user extends uniapp_external_api {
         $returns = array();
         foreach ($users as $user) {
             $user->avatar = get_link(new user_picture($user));
-            $user = new User($user);
+            $user = new UserStructure($user);
             $returns[] = $user->get_data();
         }
         return $returns;
@@ -223,7 +194,9 @@ class local_uniappws_user extends uniapp_external_api {
      */
     public static function get_users_by_courseid_returns() {
         return new external_multiple_structure(
-            User::get_class_structure()
+            UserStructure::get_class_structure()
         );
     }
 }
+
+?>
