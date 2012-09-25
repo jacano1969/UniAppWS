@@ -93,7 +93,7 @@ class local_uniappws_folder extends uniapp_external_api {
 			// check files
 			foreach($content['file'] as $file){
 				$file['rootid'] = $folderid;
-				$file['parent'] = $content['parent'];
+				$file['parent'] = $folder_entry['name'];
 				$file['type'] = 'file';
 				array_push($folder, $file);
 			}
