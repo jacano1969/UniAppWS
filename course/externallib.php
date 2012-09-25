@@ -52,8 +52,7 @@ class local_uniappws_course extends uniapp_external_api {
      * @return external_description
      */
     public static function get_courses_by_userid_returns() {
-        return
-            new external_multiple_structure(
+        return new external_multiple_structure(
                 CourseStructure::get_class_structure()
             );
     }

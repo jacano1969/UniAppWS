@@ -327,6 +327,15 @@ $functions = array(
 			'type'        => 'write',
 			'capabilities'=> 'mod/assignment:submit',
 		),
+		// folder
+		'local_uniappws_folder_get_folder_by_id' => array(
+			'classname'   => 'local_uniappws_folder',
+			'methodname'  => 'get_folder',
+			'classpath'   => 'local/uniappws/mod/folder/externallib.php',
+			'description' => 'Given the id gets the folder content',
+			'type'		=> 'read',
+			'capabilities'=> 'mod/folder:view',
+		),
 );
 
 
