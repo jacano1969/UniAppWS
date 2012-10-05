@@ -22,7 +22,18 @@ class ForumPost extends ExternalObject{
                 'discussion'=> new external_value(PARAM_INT,    'discussion id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
                 'modified'  => new external_value(PARAM_INT,    'time of last modification in seconds', VALUE_OPTIONAL, 0, NULL_NOT_ALLOWED),
                 'subject'   => new external_value(PARAM_TEXT,   'post subject', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
-                'message'   => new external_value(PARAM_RAW,    'post message', VALUE_REQUIRED, '', NULL_NOT_ALLOWED)
+                'message'   => new external_value(PARAM_RAW,    'post message', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                'attachments'=> new external_multiple_structure(
+					new external_single_structure(
+						array(
+							'filename'  => new external_value(PARAM_TEXT, 'Filename', VALUE_OPTIONAL, ''),
+							'filesize'  => new external_value(PARAM_INT, 'Filesize', VALUE_OPTIONAL, 0),
+							'mime'      => new external_value(PARAM_TEXT, 'File MIME', VALUE_OPTIONAL, ''),
+							'url'       => new external_value(PARAM_URL, 'File url', VALUE_OPTIONAL, ''),
+						)
+					)
+				),
+				
             ), 'Post'
         );
     }

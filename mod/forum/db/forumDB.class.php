@@ -4,6 +4,8 @@ if (!defined('MOODLE_INTERNAL')) {
     die('Direct access to this script is forbidden.');    ///  It must be included from a Moodle page
 }
 
+require_once(UNIAPP_ROOT . '/files/externallib.php');
+
 class forum_db {
     /**
      * Given an object containing all the necessary data,
@@ -371,6 +373,19 @@ class forum_db {
             $posts = $DB->get_records_sql($sql, null, $begin, $n);
         }
 
+		$uniappws_files = new local_uniappws_files();
+
+		foreach($posts as $post) {
+			$post->attachments = array();
+			if($post->attachment == 1) {
+				$records = $DB->get_records_select('files', "component = 'mod_forum' and itemid=$post->id and filearea='attachment' and filename != '.'", null, null, 'id');
+				foreach($records as $record){
+					$fileid = intval($record->id);
+					$file = $uniappws_files->get_file_url($fileid);
+					$post->attachments[] = $file;
+				}
+			}
+		}
         return $posts;
     }
 
