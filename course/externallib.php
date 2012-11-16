@@ -141,7 +141,8 @@ class local_uniappws_course extends uniapp_external_api {
 			$course_modules = get_all_instances_in_course($module_name, $course, $USER->id);
 
 			foreach($course_modules as $course_module) {
-				//print_r($course_module);
+				//print_r($course_module); 
+				//print_r('<hr>');
 				$entry = count($modules_list);
 				$modules_list[$entry] = array(
 					'id' => intval($course_module->coursemodule),
@@ -151,7 +152,8 @@ class local_uniappws_course extends uniapp_external_api {
 					'type' => $course_module->type,
 					'name' => $course_module->name,
 					'intro' => $course_module->intro,
-					'timemodified' => intval($course_module->timemodified)
+					'timemodified' => intval($course_module->timemodified),
+					'section' => intval($course_module->section)
 				);
 
 				// set the type for the assignment
@@ -178,7 +180,8 @@ class local_uniappws_course extends uniapp_external_api {
 					'type' => new external_value(PARAM_TEXT, 'module title', VALUE_OPTIONAL),
 					'name' => new external_value(PARAM_TEXT, 'module title', VALUE_REQUIRED, 'name_unknow', NULL_NOT_ALLOWED),
 					'intro' => new external_value(PARAM_RAW, 'module intro', VALUE_OPTIONAL),
-					'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
+					'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+					'section' => new external_value(PARAM_INT, 'section number', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
 					)	
 				) 
 			);

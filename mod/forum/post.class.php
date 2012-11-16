@@ -20,6 +20,7 @@ class ForumPost extends ExternalObject{
                 'parent'    => new external_value(PARAM_INT,    'parent post id', VALUE_DEFAULT, 0, NULL_NOT_ALLOWED),
                 'userid'    => new external_value(PARAM_INT,    'user id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
                 'discussion'=> new external_value(PARAM_INT,    'discussion id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+                'created'  => new external_value(PARAM_INT,     'creation time', VALUE_OPTIONAL, 0, NULL_NOT_ALLOWED),
                 'modified'  => new external_value(PARAM_INT,    'time of last modification in seconds', VALUE_OPTIONAL, 0, NULL_NOT_ALLOWED),
                 'subject'   => new external_value(PARAM_TEXT,   'post subject', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'message'   => new external_value(PARAM_RAW,    'post message', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
