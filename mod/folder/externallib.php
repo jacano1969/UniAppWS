@@ -43,13 +43,16 @@ class local_uniappws_folder extends uniapp_external_api {
 			$new_file_entry = array(); 
 			//$new_file_entry['id'] = $file->get_id();
 			$new_file_entry['name'] = $file->get_filename();
+			$new_file_entry['fileid'] = $file->get_id();
 			$new_file_entry['size'] = $file->get_filesize();
 			$new_file_entry['mime'] = $file->get_mimetype();
+			/*
 			$new_file_entry['url'] = file_encode_url(
 				"$CFG->wwwroot/pluginfile.php",
 				'/'.$context->id.'/mod_folder/content/'.$revision.$file->get_filepath().$file->get_filename(),
 				true
 			);
+			*/
 			array_push(self::$folder_structure[$current_dir]['file'], $new_file_entry);
 		}
 	}
@@ -85,10 +88,11 @@ class local_uniappws_folder extends uniapp_external_api {
 			$folder_entry['rootid'] = $folderid;
 			$folder_entry['parent'] = $content['parent'];
 			$folder_entry['name'] = $folder_name;
+			$folder_entry['fileid'] = 0;
 			$folder_entry['size'] = 0;
 			$folder_entry['mime'] = 'inode/directory';
 			$folder_entry['type'] = 'dir';
-			$folder_entry['url'] = '';
+			//$folder_entry['url'] = '';
 			array_push($folder, $folder_entry);
 			// check files
 			foreach($content['file'] as $file){
@@ -98,7 +102,6 @@ class local_uniappws_folder extends uniapp_external_api {
 				array_push($folder, $file);
 			}
 		}
-		
 		return $folder;
     }
 

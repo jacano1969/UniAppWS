@@ -176,6 +176,43 @@ class local_uniappws_files extends uniapp_external_api {
         );
     }
 
+    public static function get_file_parameters() {
+        return new external_function_parameters(
+            array(
+                'fileid' => new external_value(PARAM_INT, 'File id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+            )
+        );
+    }
+
+    public static function get_file($fileid) {
+        global $CFG, $DB, $USER;
+        $system_context = get_context_instance(CONTEXT_SYSTEM);
+        self::validate_context($system_context);
+
+        $fs = get_file_storage();
+        $f = $fs->get_file_by_id($fileid);
+        if (!$f) {
+           throw new moodle_exception('nofile');
+        }
+        if ($f->get_filesize() == 0) {
+            throw new moodle_exception('invalidfile');
+        }
+        $filename = $f->get_filename();
+        $filetype = $f->get_mimetype();
+        $filesize = $f->get_filesize();
+		header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
+		header("Cache-Control: public"); // needed for i.e.
+		header("Content-Type: $filetype");
+		header("Content-Transfer-Encoding: Binary");
+		header("Content-Length: $filesize");
+		header("Content-Disposition: attachment; filename=$filename");
+		return $f->readfile();
+    }
+
+    public static function get_file_returns() { }
+
+
+
 }
 
 ?>

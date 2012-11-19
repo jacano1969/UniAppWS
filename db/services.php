@@ -264,6 +264,15 @@ $functions = array(
 			'capabilities'=> '',
 		),
 
+		'local_uniappws_files_get_file' => array(
+			'classname'   => 'local_uniappws_files',
+			'methodname'  => 'get_file',
+			'classpath'   => 'local/uniappws/files/externallib.php',
+			'description' => 'Returns the file',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
 		// assignment
 		'local_uniappws_assign_get_assignments_by_courseid' => array(
 			'classname'   => 'local_uniappws_assignment',
