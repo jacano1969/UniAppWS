@@ -180,11 +180,12 @@ class local_uniappws_files extends uniapp_external_api {
         return new external_function_parameters(
             array(
                 'fileid' => new external_value(PARAM_INT, 'File id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+                'fileName' => new external_value(PARAM_INT, 'File name', VALUE_OPTIONAL, ''),
             )
         );
     }
 
-    public static function get_file($fileid) {
+    public static function get_file($fileid, $fileName) {
         global $CFG, $DB, $USER;
         $system_context = get_context_instance(CONTEXT_SYSTEM);
         self::validate_context($system_context);
@@ -197,7 +198,9 @@ class local_uniappws_files extends uniapp_external_api {
         if ($f->get_filesize() == 0) {
             throw new moodle_exception('invalidfile');
         }
-        $filename = $f->get_filename();
+
+		if(empty($fileName)) { $fileName = $f->get_filename(); }
+
         $filetype = $f->get_mimetype();
         $filesize = $f->get_filesize();
 		header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
@@ -205,7 +208,7 @@ class local_uniappws_files extends uniapp_external_api {
 		header("Content-Type: $filetype");
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-Length: $filesize");
-		header("Content-Disposition: attachment; filename=$filename");
+		header("Content-Disposition: attachment; filename=$fileName");
 		return $f->readfile();
     }
 
