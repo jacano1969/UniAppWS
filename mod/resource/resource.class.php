@@ -22,7 +22,8 @@ class Resource extends ExternalObject{
                 'intro'         => new external_value(PARAM_RAW,        'resource description', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'timemodified'  => new external_value(PARAM_INT,        'date of last modification in seconds', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
                 'fileid'        => new external_value(PARAM_INT,        'fileid', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-                'filemimetype'  => new external_value(PARAM_TEXT,       'file mime type', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                'filename'      => new external_value(PARAM_TEXT,       'file name', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                'filemime'      => new external_value(PARAM_TEXT,       'file mime type', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'filesize'      => new external_value(PARAM_INT,        'file size in bytes', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
             ), 'Resource'
         );

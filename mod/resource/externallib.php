@@ -45,8 +45,9 @@ class local_uniappws_resource extends uniapp_external_api {
             $file = reset($files);
             unset($files);
 
+            $resource->filename = $file->get_filename();
             $resource->fileid = $file->get_id();
-            $resource->filemimetype = $file->get_mimetype();
+            $resource->filemime = $file->get_mimetype();
             $resource->filesize = $file->get_filesize();
             $return = new Resource($resource);
             $return = $return->get_data();
