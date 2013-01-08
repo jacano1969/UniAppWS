@@ -49,10 +49,8 @@ class local_uniappws_resource extends uniapp_external_api {
             $resource->fileid = $file->get_id();
             $resource->filemime = $file->get_mimetype();
             $resource->filesize = $file->get_filesize();
-            $return = new Resource($resource);
-            $return = $return->get_data();
-
-            return $return;
+            $Res = new Resource($resource);
+            return $Res->get_data();
         }
 
         throw new moodle_exception('generalexceptionmessage','moodbile_resource', '','Error');

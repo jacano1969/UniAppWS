@@ -237,6 +237,18 @@ $functions = array(
 			'type'		=> 'read',
 			'capabilities'=> '',
 		),
+
+		// url
+		'local_uniappws_url_get_url' => array(
+			'classname'   => 'local_uniappws_url',
+			'methodname'  => 'get_url',
+			'classpath'   => 'local/uniappws/mod/url/externallib.php',
+			'description' => 'Gets a resource (URL resource type); required parameters: urlid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		// files
 		'local_uniappws_files_upload' => array(
 			'classname'   => 'local_uniappws_files',
 			'methodname'  => 'upload_file',
