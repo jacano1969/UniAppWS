@@ -10,7 +10,7 @@ To install please proceed as follows:
 	This access this page click on Settings-Plugins-Web Services-Manage Protocols.
 	Enable Web service documentation flag.
 
-2. Decompress the uniappws archive and move the rename the folder to uniappws.
+2. Decompress the uniappws archive and rename the folder to uniappws.
 
 3. Move the folder to MOODLEROOT/local
 
