@@ -18,7 +18,7 @@ To install please proceed as follows:
 
 4. Authenticate as administrator on your Moodle installation and click on Notifications.
 
-5. Click on Ok and finish the installatio
+5. Click on Ok and finish the installation
 
 Once the installation is complete you should have a new webservices set under
 Settings-Plugins-Web Services-External services named "UniApp web services".
