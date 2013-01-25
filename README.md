@@ -11,6 +11,7 @@ To install please proceed as follows:
 	Enable Web service documentation flag.
 
 2. Decompress the uniappws archive and rename the folder to uniappws.
+   You also can use this command: git clone git://github.com/arael/UniAppWS.git uniappws
 
 3. Move the folder to MOODLEROOT/local
 
