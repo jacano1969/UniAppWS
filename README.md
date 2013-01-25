@@ -22,5 +22,6 @@ Once the installation is complete you should have a new webservices set under
 Settings-Plugins-Web Services-External services named "UniApp web services".
 
 This is a fork of the Moodbile project. Many thanks to all people that have been working on it.
+
 Moodbile - http://www.moodbile.org
 
