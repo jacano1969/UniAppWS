@@ -238,6 +238,24 @@ $functions = array(
 			'capabilities'=> '',
 		),
 
+		// choice
+		'local_uniappws_choice_get_choice' => array(
+			'classname'   => 'local_uniappws_choice',
+			'methodname'  => 'get_choice',
+			'classpath'   => 'local/uniappws/mod/choice/externallib.php',
+			'description' => 'Gets a choice (File choice type); required parameters: choiceid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+		'local_uniappws_choice_submit_choice' => array(
+			'classname'   => 'local_uniappws_choice',
+			'methodname'  => 'submit_choice',
+			'classpath'   => 'local/uniappws/mod/choice/externallib.php',
+			'description' => 'Gets a choice (File choice type); required parameters: choiceid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
 		// url
 		'local_uniappws_url_get_url' => array(
 			'classname'   => 'local_uniappws_url',

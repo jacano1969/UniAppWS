@@ -133,7 +133,7 @@ class local_uniappws_course extends uniapp_external_api {
 		//| url         |
 		//| wiki        |
 		//| workshop    |
-		$module_names = array('assignment', 'folder', 'forum', 'resource', 'url');
+		$module_names = array('assignment', 'folder', 'forum', 'resource', 'choice', 'url');
 		$course = $DB->get_record('course', array('id' => $courseid));
 		$modules_list = array();
 		foreach($module_names as $module_name) {

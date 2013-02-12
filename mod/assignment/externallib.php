@@ -392,9 +392,9 @@ class local_uniappws_assignment extends uniapp_external_api {
         }
         $submission = assignment_db::moodbile_get_submission($USER->id, $assigid);
         if (is_enrolled(get_context_instance(CONTEXT_MODULE, $cm->id), $USER, 'mod/assignment:submit')
-          and self::assignment_submission_is_open($assig)                          // assignment not closed yet
+          and self::assignment_submission_is_open($assig)                       // assignment not closed yet
           and (empty($submission) or ($submission->userid == $USER->id))        // his/her own submission
-          and !self::assignment_submission_is_finalized($submission)) {              // no uploading after final submission
+          and !self::assignment_submission_is_finalized($submission)) {         // no uploading after final submission
             return true;
         } else {
             return false;

@@ -1,5 +1,5 @@
 <?php
-$plugin->version  = 2012042443;
+$plugin->version  = 2013020604;
                                   
 $plugin->requires = 2010112400;  // Requires this Moodle version - at least 2.0
 $plugin->cron     = 0;
