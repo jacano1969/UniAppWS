@@ -33,10 +33,10 @@ class local_uniappws_group extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_group_by_groupid_parameters(), array('groupid'=>$parameters));
 
         if (!(self::get_group_by_groupid_permissions($groupid))) {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
 		}
 
-        $group = group_db::moodbile_get_group_by_groupid($groupid);
+        $group = group_db::get_group_by_groupid($groupid);
 
         $group = new Group($group);
         return $group->get_data();
@@ -68,7 +68,7 @@ class local_uniappws_group extends uniapp_external_api {
     }
 
     private function get_course_by_groupid($groupid) {
-        return group_db::moodbile_get_course_by_groupid($groupid);
+        return group_db::get_course_by_groupid($groupid);
     }
 
     public static function get_group_by_groupid_returns() {
@@ -93,9 +93,9 @@ class local_uniappws_group extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_group_members_by_groupid_parameters(), array('params' => $parameters));
 
         if (!self::get_group_members_by_groupid_permissions($groupid)) {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
         }
-        $users = group_db::moodbile_get_group_members_by_groupid($groupid, $startpage, $n);
+        $users = group_db::get_group_members_by_groupid($groupid, $startpage, $n);
 
         $returnusers = array();
         foreach ($users as $user) {
@@ -160,10 +160,10 @@ class local_uniappws_group extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_group_members_by_groupingid_parameters(),array('params' => $parameters));
 
         if (!self::get_group_members_by_groupingid_permissions($groupingid)) {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
 		}
 
-        $users = group_db::moodbile_get_group_members_by_groupingid($groupingid, $startpage, $n);
+        $users = group_db::get_group_members_by_groupingid($groupingid, $startpage, $n);
 
         $returnusers = array();
         foreach ($users as $user) {
@@ -182,7 +182,7 @@ class local_uniappws_group extends uniapp_external_api {
             return true;
         }
         $grouping = groups_get_grouping($groupingid, 'courseid', MUST_EXIST);
-        $course = course_db::moodbile_get_course_by_courseid($grouping->courseid);
+        $course = course_db::get_course_by_courseid($grouping->courseid);
         if ($course == null || $course == false) {
             return false;
         }
@@ -232,14 +232,14 @@ class local_uniappws_group extends uniapp_external_api {
         $permission = self::get_groups_by_courseid_permissions($courseid);
 
         if ($permission === true) {
-            $groups = group_db::moodbile_get_groups_by_courseid($courseid, $startpage, $n);
+            $groups = group_db::get_groups_by_courseid($courseid, $startpage, $n);
         }
         elseif ($permission === MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS) {
             global $USER;
-            $groups = group_db::moodbile_get_groups_by_courseid($courseid, $startpage, $n, $USER->id);
+            $groups = group_db::get_groups_by_courseid($courseid, $startpage, $n, $USER->id);
         }
         else {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
         }
 
         $returngroups = array();
@@ -252,7 +252,7 @@ class local_uniappws_group extends uniapp_external_api {
     }
 
     private static function get_groups_by_courseid_permissions($courseid) {
-        $course = course_db::moodbile_get_course_by_courseid($courseid);
+        $course = course_db::get_course_by_courseid($courseid);
         return self::get_groups_permission($course);
     }
 
@@ -281,14 +281,14 @@ class local_uniappws_group extends uniapp_external_api {
 
         $permission = self::get_groups_by_groupingid_permissions($groupingid);
         if ($permission === true) {
-            $groups = group_db::moodbile_get_groups_by_groupingid($groupingid, $startpage, $n);
+            $groups = group_db::get_groups_by_groupingid($groupingid, $startpage, $n);
         }
         elseif ($permission === MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS) {
             global $USER;
-            $groups = group_db::moodbile_get_groups_by_groupingid($groupingid, $startpage, $n, $USER->id);
+            $groups = group_db::get_groups_by_groupingid($groupingid, $startpage, $n, $USER->id);
         }
         else {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
         }
 
         $returngroups = array();
@@ -301,7 +301,7 @@ class local_uniappws_group extends uniapp_external_api {
     }
 
     private static function get_groups_by_groupingid_permissions($groupingid) {
-        $course = group_db::moodbile_get_course_by_groupingid($groupingid);
+        $course = group_db::get_course_by_groupingid($groupingid);
         return self::get_groups_permission($course);
     }
 
@@ -362,11 +362,11 @@ class local_uniappws_group extends uniapp_external_api {
 
         $permission = self::get_groups_by_courseid_and_userid_permissions($courseid,$userid);
         if ($permission === false) {
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
         }
         else if ($permission === true) {
             //so we use the same function as get_groups_by_courseid passing the user param.
-            $groups = group_db::moodbile_get_groups_by_courseid($courseid, $startpage, $n, $userid);
+            $groups = group_db::get_groups_by_courseid($courseid, $startpage, $n, $userid);
         }
 
         $returngroups = array();
@@ -379,7 +379,7 @@ class local_uniappws_group extends uniapp_external_api {
     }
 
     private static function get_groups_by_courseid_and_userid_permissions($courseid, $userid){
-        $course = course_db::moodbile_get_course_by_courseid($courseid);
+        $course = course_db::get_course_by_courseid($courseid);
         if ($course == null || $course == false) {
             return false;
         }
@@ -419,9 +419,9 @@ class local_uniappws_group extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_groupings_by_courseid_parameters(), array('courseid'=>$parameters));
 
         if (!self::get_groupings_by_courseid_permissions($courseid))
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
 
-        $groupings = group_db::moodbile_get_groupings_by_courseid($courseid, $startpage, $n);
+        $groupings = group_db::get_groupings_by_courseid($courseid, $startpage, $n);
 
         $returngroupings = array();
         foreach ($groupings as $grouping) {
@@ -437,7 +437,7 @@ class local_uniappws_group extends uniapp_external_api {
          * que ja controlem els permisos en get_groups_by_groupid
          * pero per obtenir els grups hauria de fer get_groups_by_groupingid
          */
-        $course = course_db::moodbile_get_course_by_courseid($courseid);
+        $course = course_db::get_course_by_courseid($courseid);
         if ($course == null || $course == false) {
             return false;
         }
@@ -480,9 +480,9 @@ class local_uniappws_group extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_groupings_by_courseid_and_userid_parameters(), array('params' => $parameters));
 
         if (!self::get_groupings_by_courseid_and_userid_permissions($courseid, $userid))
-            throw new moodle_exception('nopermissions','moodbile_group', '',"Permission denied");
+            throw new moodle_exception('group:nopermissions','local_uniappws', '', '');
 
-        $groupings = group_db::moodbile_get_groupings_by_courseid_and_userid($courseid, $startpage, $n, $userid);
+        $groupings = group_db::get_groupings_by_courseid_and_userid($courseid, $startpage, $n, $userid);
 
         $returngroupings = array();
         foreach ($groupings as $grouping) {

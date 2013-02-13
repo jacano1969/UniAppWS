@@ -98,7 +98,7 @@ class local_uniappws_files extends uniapp_external_api {
         $contextid = $user_context->id;
         $results = $fs->get_area_files($contextid, 'user', 'private', 0, "sortorder, itemid, filepath, filename" , false);
         if (empty($results)) {
-           throw new moodle_exception('generalexceptionmessage','moodbile_files', '','No files found');
+           throw new moodle_exception('file:nonefound','local_uniappws', '','');
         }
         $ret = array();
         $i=0;
@@ -113,7 +113,7 @@ class local_uniappws_files extends uniapp_external_api {
             }
         }
         if (empty($ret)) {
-           throw new moodle_exception('generalexceptionmessage','moodbile_files', '','No files found');
+           throw new moodle_exception('file:nonefound','files', '','');
         }
         return $ret;
     }

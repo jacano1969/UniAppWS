@@ -20,7 +20,7 @@ class forum_db {
      * @param int $userid
      * @return object
      */
-    public static function moodbile_forum_add_discussion($discussion, $mform=null, &$message=null, $userid=null) {
+    public static function forum_add_discussion($discussion, $mform=null, &$message=null, $userid=null) {
         global $USER, $CFG, $DB;
 
         $timenow = time();
@@ -97,7 +97,7 @@ class forum_db {
      *
      * @return a forum
      */
-    public static function moodbile_get_forum_by_id($forumid, $canviewhidden) {
+    public static function get_forum_by_id($forumid, $canviewhidden) {
         global $DB;
         $viewhidden = '';
         if(!$canviewhidden) {
@@ -105,7 +105,7 @@ class forum_db {
         }
 
         if(!$cm = get_coursemodule_from_instance('forum', $forumid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
 
         $params = array();
@@ -133,7 +133,7 @@ class forum_db {
      *
      * @return a list of forum
      */
-    public static function moodbile_get_forums_by_courseid($courseid, $canviewhidden, $context, $startpage, $n) {
+    public static function get_forums_by_courseid($courseid, $canviewhidden, $context, $startpage, $n) {
         global $DB;
 
         $viewhidden = '';
@@ -167,7 +167,7 @@ class forum_db {
      *
      * @return a list of discussions
      */
-     public static function moodbile_get_forum_discussions($forumid, $canviewhidden, $sort="d.timemodified DESC", $startpage, $n) {
+     public static function get_forum_discussions($forumid, $canviewhidden, $sort="d.timemodified DESC", $startpage, $n) {
         global $DB;
 
         $viewhidden = '';
@@ -199,7 +199,7 @@ class forum_db {
      *
      * @return a forum
      */
-    public static function moodbile_get_forum_by_discussion_id($discid) {
+    public static function get_forum_by_discussion_id($discid) {
         global $DB;
 
         $discussion = $DB->get_record('forum_discussions', array('id' => $discid), '*', MUST_EXIST);
@@ -215,7 +215,7 @@ class forum_db {
      *
      * @return a forum
      */
-    public static function moodbile_get_forum_by_postid($postid) {
+    public static function get_forum_by_postid($postid) {
         global $DB;
 
         $post = $DB->get_record('forum_posts', array('id' => $postid), '*', MUST_EXIST);
@@ -235,7 +235,7 @@ class forum_db {
      *
      * @return an array of forum
      */
-    public static function moodbile_get_forums_by_userid($userid, $viewable, $startpage, $n) {
+    public static function get_forums_by_userid($userid, $viewable, $startpage, $n) {
         global $DB;
 
         $params = array();
@@ -259,7 +259,7 @@ class forum_db {
      *
      * @return a discussion
      */
-    public static function moodbile_get_discussion_by_post_id($postid) {
+    public static function get_discussion_by_post_id($postid) {
         global $DB;
 
         $post = $DB->get_record('forum_posts', array('id' => $postid), '*', MUST_EXIST);
@@ -275,7 +275,7 @@ class forum_db {
      *
      * @return a discussion
      */
-    public static function moodbile_get_discussion_by_id($discid) {
+    public static function get_discussion_by_id($discid) {
         global $DB;
 
         $sql = "SELECT d.*
@@ -293,7 +293,7 @@ class forum_db {
      * @return int discussion id
      * @return int first post id
      */
-    public static function moodbile_create_discussion($discussion, $canviewhidden) {
+    public static function create_discussion($discussion, $canviewhidden) {
         global $DB;
 
         $return = -1;
@@ -319,12 +319,12 @@ class forum_db {
                 $newdiscussion->messagetrust = 0;
 
                 // Create discussion
-                $return = self::moodbile_forum_add_discussion($newdiscussion);
+                $return = self::forum_add_discussion($newdiscussion);
             }
         }
 
         if ($return == -1){
-            throw new moodle_exception('nopermissions','moodbile_forum', '',"Permission denied");
+            throw new moodle_exception('forum:nopermissions', 'forum', '', '');
         }
         return $return;
     }
@@ -336,7 +336,7 @@ class forum_db {
      *
      * @return bool success
      */
-    public static function moodbile_delete_discussion($discid) {
+    public static function delete_discussion($discid) {
         global $DB, $CFG;
         require_once("$CFG->dirroot/mod/forum/lib.php");
 
@@ -359,7 +359,7 @@ class forum_db {
      *
      * @return array of posts
      */
-    public static function moodbile_get_posts_by_discussion_id($discid, $forum, $context, $startpage, $n) {
+    public static function get_posts_by_discussion_id($discid, $forum, $context, $startpage, $n) {
         global $DB,$CFG;
         require_once("$CFG->dirroot/mod/forum/lib.php");
 
@@ -397,7 +397,7 @@ class forum_db {
      *
      * @return int postid
      */
-    public static function moodbile_create_post($post, $forum) {
+    public static function create_post($post, $forum) {
         global $DB,$CFG;
         require_once("$CFG->dirroot/mod/forum/lib.php");
 
@@ -408,7 +408,7 @@ class forum_db {
         $cm = get_coursemodule_from_instance('forum', $forum->id);
         $course = $DB->get_record('course', array('id' => $forum->course));
         if(!forum_user_can_post((object)$forum, (object)$discussion, NULL, $cm, $course, NULL)) {
-            throw new moodle_exception('User has no permission to post!');
+            throw new moodle_exception('nopostforum','forum','','');
         }
 
         $postid = forum_add_new_post($post, $mform = null, $message = null);
@@ -426,7 +426,7 @@ class forum_db {
      *
      * @return bool success
      */
-    public static function moodbile_update_post($postid, $subject, $message, $cm, $caneditpost) {
+    public static function update_post($postid, $subject, $message, $cm, $caneditpost) {
         global $DB, $USER, $CFG;
         require_once("$CFG->dirroot/mod/forum/lib.php");
 
@@ -444,7 +444,7 @@ class forum_db {
             $result = forum_update_post($post, null, $cm);
 
         } else {
-            throw new moodle_exception('nopermissions','moodbile_forum', '','Insufficient edit permissions');
+            throw new moodle_exception('forum:noeditpostpermission', 'local_uniappws', '', '');
         }
 
         return $result;
@@ -455,7 +455,7 @@ class forum_db {
      *
      * @throws Exception
      */
-    public static function moodbile_delete_post($postid, $candeleteownpost, $candeleteallposts) {
+    public static function delete_post($postid, $candeleteownpost, $candeleteallposts) {
         global $DB, $USER, $CFG;
         require_once("$CFG->dirroot/mod/forum/lib.php");
 
@@ -470,7 +470,7 @@ class forum_db {
             //TODO: Ask if delete all children too
             if(!$post->parent) { // post is a discussion topic as well, so delete discussion
                 if($forum->type == 'single') {
-                    throw new moodle_exception('nopermissions','moodbile_forum', '',"Forum cannot be deleted");
+                    throw new moodle_exception('cannotdeletepost', 'forum', '', '');
                 }
                 $result = forum_delete_discussion($discussion, false, $course, $cm, $forum);
 
@@ -480,7 +480,7 @@ class forum_db {
             }
 
         } else {
-            throw new moodle_exception('nopermissions','moodbile_forum', '',"Permission denied");
+            throw new moodle_exception('cannotdeletepost', 'forum', '', '');
         }
 
         return $result;

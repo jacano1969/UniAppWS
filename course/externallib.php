@@ -36,7 +36,7 @@ class local_uniappws_course extends uniapp_external_api {
             $viewhidden = true;
         }
 
-        $courses = course_db::moodbile_get_courses_by_userid($userid, $viewhidden, $startpage, $n);
+        $courses = course_db::get_courses_by_userid($userid, $viewhidden, $startpage, $n);
 
         $returncourses = array();
         foreach ($courses as $course) {

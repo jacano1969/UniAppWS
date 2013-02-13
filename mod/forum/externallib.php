@@ -30,7 +30,7 @@ class local_uniappws_forum extends uniapp_external_api {
 		global $DB;
 		
         if (!$cm = get_coursemodule_from_instance('forum', $forumid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
 
         $context = get_context_instance(CONTEXT_COURSE, $cm->course);
@@ -42,7 +42,7 @@ class local_uniappws_forum extends uniapp_external_api {
             $viewhidden = true;
         }
 
-        $forum = forum_db::moodbile_get_forum_by_id($forumid, $viewhidden);
+        $forum = forum_db::get_forum_by_id($forumid, $viewhidden);
         $return = new Forum($forum);
         $return = $return->get_data();
 
@@ -90,7 +90,7 @@ class local_uniappws_forum extends uniapp_external_api {
             $viewhidden = true;
         }
 
-        $forums = forum_db::moodbile_get_forums_by_courseid($courseid, $viewhidden, $context, $startpage, $n);
+        $forums = forum_db::get_forums_by_courseid($courseid, $viewhidden, $context, $startpage, $n);
 
         $returnforums = array();
         foreach ($forums as $forum) {
@@ -140,7 +140,7 @@ class local_uniappws_forum extends uniapp_external_api {
 
 		$USER = $DB->get_record('user', array('id'=>$userid) );
 		if( !isset($USER) or empty($USER) ) {
-			throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','User not found');
+			throw new moodle_exception('user:notfound', 'local_uniappws', '', '');
 		}
 		$courses = enrol_get_my_courses(array('timemodified'), 'fullname');
 
@@ -150,11 +150,11 @@ class local_uniappws_forum extends uniapp_external_api {
             $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
             self::validate_context($coursecontext);
 
-            $courseforums = forum_db::moodbile_get_forums_by_courseid($course->id, true, $coursecontext, 0, 0);
+            $courseforums = forum_db::get_forums_by_courseid($course->id, true, $coursecontext, 0, 0);
 
             foreach ($courseforums as $forum) {
                 if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-                    throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+                    throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
                 }
 
                 $forumcontext = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -169,7 +169,7 @@ class local_uniappws_forum extends uniapp_external_api {
             }
         }
 
-        $forums = forum_db::moodbile_get_forums_by_userid($userid, $viewable, $startpage, $n);
+        $forums = forum_db::get_forums_by_userid($userid, $viewable, $startpage, $n);
 
         $returnforums = array();
         foreach ($forums as $forum) {
@@ -218,7 +218,7 @@ class local_uniappws_forum extends uniapp_external_api {
         require_once($CFG->dirroot.'/mod/forum/lib.php');   // We'll need this
 
         if (!$cm = get_coursemodule_from_instance('forum', $forumid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
 
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -233,7 +233,7 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $sort = "d.timemodified DESC";
 
-        $discussions = forum_db::moodbile_get_forum_discussions($forumid, $viewhidden, $sort, $startpage, $n);
+        $discussions = forum_db::get_forum_discussions($forumid, $viewhidden, $sort, $startpage, $n);
 		
         $returndiscussions = array();
         foreach ($discussions as $discussion) {
@@ -277,15 +277,15 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_discussion_by_id($discid) {
 //        $params = self::validate_parameters(self::get_discussion_by_id_parameters(), array('discid' => $parameters));
 
-        $forum = forum_db::moodbile_get_forum_by_discussion_id($discid);
+        $forum = forum_db::get_forum_by_discussion_id($discid);
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
         require_capability('mod/forum:viewdiscussion', $context);
 
-        $discussion = forum_db::moodbile_get_discussion_by_id($discid);
+        $discussion = forum_db::get_discussion_by_id($discid);
         $return = new Discussion($discussion);
         $return = $return->get_data();
         return $return;
@@ -321,10 +321,10 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_forum_by_discussion_id($discid) {
 //        $params = self::validate_parameters(self::get_forum_by_discussion_id_parameters(), array('discid' => $parameters));
 
-        $forum = forum_db::moodbile_get_forum_by_discussion_id($discid);
+        $forum = forum_db::get_forum_by_discussion_id($discid);
 
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -365,10 +365,10 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_forum_by_postid($postid) {
 //        $params = self::validate_parameters(self::get_forum_by_post_id_parameters(), array('postid' => $parameters));
 
-        $forum = forum_db::moodbile_get_forum_by_postid($postid);
+        $forum = forum_db::get_forum_by_postid($postid);
 
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -425,7 +425,7 @@ class local_uniappws_forum extends uniapp_external_api {
 //        $params = $params['discussion'];
 
         if (!$cm = get_coursemodule_from_instance('forum', $discussion['forumid'])) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -436,7 +436,7 @@ class local_uniappws_forum extends uniapp_external_api {
         }
         require_capability('mod/forum:startdiscussion', $context);
 
-        $result = forum_db::moodbile_create_discussion($discussion, $canviewhidden);
+        $result = forum_db::create_discussion($discussion, $canviewhidden);
 
         return $result;
     }
@@ -480,13 +480,13 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $forum = self::get_forum_by_discussion_id($discid);
         if (!$cm = get_coursemodule_from_instance('forum', $forum['id'])) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
         require_capability('mod/forum:deleteanypost', $context);
 
-        $result = forum_db::moodbile_delete_discussion($discid);
+        $result = forum_db::delete_discussion($discid);
 
 		if($result == true){
         	return array("success" => true);
@@ -539,12 +539,12 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $forum = self::get_forum_by_discussion_id($discid);
         if (!$cm = get_coursemodule_from_instance('forum', $forum['id'])) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
 
-        $posts = forum_db::moodbile_get_posts_by_discussion_id($discid, $forum, $context, $startpage, $n);
+        $posts = forum_db::get_posts_by_discussion_id($discid, $forum, $context, $startpage, $n);
 
         $returnposts = array();
         foreach ($posts as $post) {
@@ -597,10 +597,10 @@ class local_uniappws_forum extends uniapp_external_api {
 //        $params = self::validate_parameters(self::create_post_parameters(), array('params' => $parameters));
 //        $params = $params['params'];
 
-        $discussion = forum_db::moodbile_get_discussion_by_post_id($parentid);
-        $forum = forum_db::moodbile_get_forum_by_discussion_id($discussion->id);
+        $discussion = forum_db::get_discussion_by_post_id($parentid);
+        $forum = forum_db::get_forum_by_discussion_id($discussion->id);
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -612,7 +612,7 @@ class local_uniappws_forum extends uniapp_external_api {
         $post->message    = $message;
         $post->itemid     = file_get_submitted_draft_itemid('message');
 
-        $result = forum_db::moodbile_create_post($post, $forum);
+        $result = forum_db::create_post($post, $forum);
         return array('postid' => $result);
     }
 
@@ -654,9 +654,9 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function update_post($post) {
         global $CFG, $USER;
 
-        $forum = forum_db::moodbile_get_forum_by_postid($post['id']);
+        $forum = forum_db::get_forum_by_postid($post['id']);
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -666,7 +666,7 @@ class local_uniappws_forum extends uniapp_external_api {
             $caneditpost = true;
         }
 
-        $result = forum_db::moodbile_update_post($post['id'], $post['subject'], $post['message'], $cm, $caneditpost);
+        $result = forum_db::update_post($post['id'], $post['subject'], $post['message'], $cm, $caneditpost);
         return array('success' => $result);
     }
 
@@ -708,9 +708,9 @@ class local_uniappws_forum extends uniapp_external_api {
 
 //        $params = self::validate_parameters(self::delete_post_parameters(), array('postid' => $postid));
 
-        $forum = forum_db::moodbile_get_forum_by_postid($postid);
+        $forum = forum_db::get_forum_by_postid($postid);
         if (!$cm = get_coursemodule_from_instance('forum', $forum->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_forum', '','Forum not found');
+            throw new moodle_exception('forum:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
@@ -725,7 +725,7 @@ class local_uniappws_forum extends uniapp_external_api {
             $candeleteallposts = true;
         }
 
-        $result = forum_db::moodbile_delete_post($postid, $candeleteownpost, $candeleteallposts);
+        $result = forum_db::delete_post($postid, $candeleteownpost, $candeleteallposts);
         return array('success' => $result);
     }
 

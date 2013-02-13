@@ -13,7 +13,7 @@ class user_db {
      *
      * @return user
      */
-    public static function moodbile_get_user_by_id($userid) {
+    public static function get_user_by_id($userid) {
         global $DB;
 
         return $DB->get_record('user', array('id' => $userid));
@@ -27,7 +27,7 @@ class user_db {
      *
      * @return user
      */
-    public static function moodbile_get_user_by_username($username) {
+    public static function get_user_by_username($username) {
         global $DB;
 
         return $DB->get_record('user', array('username' => $username));
@@ -43,7 +43,7 @@ class user_db {
      *
      * @return array of user
      */
-    public static function moodbile_get_users_by_courseid($courseid, $startpage, $n) {
+    public static function get_users_by_courseid($courseid, $startpage, $n) {
         global $DB;
 
         $sql = "SELECT u.*

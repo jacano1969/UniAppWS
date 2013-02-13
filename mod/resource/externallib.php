@@ -28,7 +28,7 @@ class local_uniappws_resource extends uniapp_external_api {
         global $DB;
 
         if (!$resource = $DB->get_record('resource', array('id'=>$resourceid))) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_resource', '','Resource not found');
+            throw new moodle_exception('resource:notfound', 'local_uniappws', '', '');
         }
         $cm = get_coursemodule_from_instance('resource', $resource->id, $resource->course, false, MUST_EXIST);
 
@@ -40,7 +40,7 @@ class local_uniappws_resource extends uniapp_external_api {
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
         if (count($files) < 1) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_resource', '','File not found');
+            throw new moodle_exception('resource:notfound', 'local_uniappws', '', '');
         } else {
             $file = reset($files);
             unset($files);
@@ -53,7 +53,7 @@ class local_uniappws_resource extends uniapp_external_api {
             return $Res->get_data();
         }
 
-        throw new moodle_exception('generalexceptionmessage','moodbile_resource', '','Error');
+        throw new moodle_exception('resource:unknownerror', 'local_uniappws', '','');
     }
 
     /**

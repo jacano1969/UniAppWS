@@ -33,7 +33,7 @@ class local_uniappws_user extends uniapp_external_api {
         $context = get_context_instance(CONTEXT_SYSTEM);
         self::validate_context($context);
 
-        $user = user_db::moodbile_get_user_by_id($USER->id);
+        $user = user_db::get_user_by_id($USER->id);
 
         if (empty($user->deleted)) {
             $user->avatar = get_link(new user_picture($user));
@@ -84,7 +84,7 @@ class local_uniappws_user extends uniapp_external_api {
 
         $params = self::validate_parameters(self::get_user_by_userid_parameters(), array('userid' => $userid));
 
-        $user = user_db::moodbile_get_user_by_id($userid);
+        $user = user_db::get_user_by_id($userid);
 
         if (empty($user->deleted)) {
             $user->avatar = get_link(new user_picture($user));
@@ -132,7 +132,7 @@ class local_uniappws_user extends uniapp_external_api {
 
         $params = self::validate_parameters(self::get_user_by_username_parameters(), array('username'=>$username));
 
-        $user = user_db::moodbile_get_user_by_username($username);
+        $user = user_db::get_user_by_username($username);
 
         if (empty($user->deleted)) {
             $user->avatar = get_link(new user_picture($user));
@@ -178,7 +178,7 @@ class local_uniappws_user extends uniapp_external_api {
         $context = get_context_instance(CONTEXT_COURSE, $courseid);
         self::validate_context($context);
 
-        $users = user_db::moodbile_get_users_by_courseid($courseid, $startpage, $n);
+        $users = user_db::get_users_by_courseid($courseid, $startpage, $n);
         $returns = array();
         foreach ($users as $user) {
             $user->avatar = get_link(new user_picture($user));

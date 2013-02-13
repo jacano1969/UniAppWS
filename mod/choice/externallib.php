@@ -28,7 +28,7 @@ class local_uniappws_choice extends uniapp_external_api {
     public static function get_choice($choiceid) {
         global $DB, $USER;
         if (!$choice = $DB->get_record('choice', array('id'=>$choiceid))) {
-            throw new moodle_exception('generalexceptionmessage','uniappws_choice', '','Choice not found');
+            throw new moodle_exception('choice:notfound', 'local_uniappws', '', '');
         }
         $cm = get_coursemodule_from_instance('choice', $choice->id, $choice->course, false, MUST_EXIST);
 
@@ -39,7 +39,7 @@ class local_uniappws_choice extends uniapp_external_api {
 
         $choice_options = $DB->get_records('choice_options', array('choiceid'=>$choiceid), 'id', 'id as optionid, text');
         if(count($choice_options) < 1) {
-            throw new moodle_exception('generalexceptionmessage','uniappws_choice', '','No options in the activity Choice.');
+            throw new moodle_exception('choice:nooptions', 'uniappws_choice', '', '');
         } else {
 			// prepare for the output
 			$choice->options = array();
@@ -57,7 +57,7 @@ class local_uniappws_choice extends uniapp_external_api {
             return $Choice->get_data();
         }
 
-        throw new moodle_exception('generalexceptionmessage','uniappws_choice', '','Error');
+        throw new moodle_exception('choice:unknownerror', 'local_uniappws', '', '');
     }
 
    	/**
@@ -91,7 +91,7 @@ class local_uniappws_choice extends uniapp_external_api {
     public static function submit_choice($choiceid, $optionid) {
         global $DB, $USER;
         if (!$choice = $DB->get_record('choice', array('id'=>$choiceid))) {
-            throw new moodle_exception('generalexceptionmessage','choice', '','Choice not found');
+            throw new moodle_exception('choice:notfound', 'local_uniappws', '', '');
         }
         $cm = get_coursemodule_from_instance('choice', $choice->id, $choice->course, false, MUST_EXIST);
 

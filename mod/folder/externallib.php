@@ -68,7 +68,7 @@ class local_uniappws_folder extends uniapp_external_api {
         global $DB;
 
         if (!$folder = $DB->get_record('folder', array('id'=>$folderid))) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_resource', '','Folder not found');
+            throw new moodle_exception('folder:notfound', 'local_uniappws', '', 'Folder not found');
         }
 
         $cm = get_coursemodule_from_instance('folder', $folder->id, $folder->course, false, MUST_EXIST);

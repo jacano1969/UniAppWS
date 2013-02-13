@@ -27,7 +27,7 @@ class local_uniappws_url extends uniapp_external_api {
     public static function get_url($urlid) {
         global $DB;
         if (!$resource = $DB->get_record('url', array('id'=>$urlid))) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_url', '','Resource not found');
+            throw new moodle_exception('url:notfound', 'local_uniappws', '', '');
         }
 
         $cm = get_coursemodule_from_instance('url', $resource->id, $resource->course, false, MUST_EXIST);
@@ -41,7 +41,7 @@ class local_uniappws_url extends uniapp_external_api {
 
 		return $url->get_data();
 
-        throw new moodle_exception('generalexceptionmessage','moodbile_url', '','Error');
+        throw new moodle_exception('url:unknownerror', 'local_uniappws', '', '');
     }
 
     /**

@@ -1,12 +1,6 @@
 <?php
 
 require_once(dirname(__FILE__).'/config.php');
-global $MBL;
-
-/**
- * Moodbile app service name
- */
-define('MOODLE_MOODBILE_SERVICE', 'moodbile_app');
 
 function get_link($userpicture){
     global $OUTPUT, $PAGE, $USER;

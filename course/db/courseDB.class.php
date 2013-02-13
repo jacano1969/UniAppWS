@@ -16,7 +16,7 @@ class course_db {
      *
      * @return array of course
      */
-    public static function moodbile_get_courses_by_userid($userid, $viewhidden, $startpage, $n) {
+    public static function get_courses_by_userid($userid, $viewhidden, $startpage, $n) {
         global $DB;
 
         $where = '';
@@ -47,7 +47,7 @@ class course_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_course_by_courseid($courseid) {
+    public static function get_course_by_courseid($courseid) {
         global $DB;
 
         return $DB->get_record('course', array('id' => $courseid));

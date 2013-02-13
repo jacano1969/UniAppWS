@@ -32,16 +32,16 @@ class local_uniappws_assignment extends uniapp_external_api {
         require_capability('mod/assignment:view',$context);
 
         require_once(UNIAPP_ROOT . '/course/db/courseDB.php');
-        if (!$course = course_db::moodbile_get_course_by_courseid($courseid)) {
-            throw new moodle_exception('unknowncourseidnumber', 'moodbile_assignment', '', $courseid);
+        if (!$course = course_db::get_course_by_courseid($courseid)) {
+            throw new moodle_exception('assignment:unknowncourseidnumber', 'local_uniappws', '', $courseid);
         }
 
-        $assignments = assignment_db::moodbile_get_assignments_by_courseid($courseid, $startpage, $n);
+        $assignments = assignment_db::get_assignments_by_courseid($courseid, $startpage, $n);
 
         $returnassign = array();
         foreach ($assignments as $assig) {
             if (!$cm = get_coursemodule_from_instance('assignment', $assig->id)) {
-                throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+                throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
             }
             $context = get_context_instance(CONTEXT_MODULE, $cm->id);
             if (!has_capability('mod/assignment:view',$context)) {
@@ -74,13 +74,13 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         self::validate_context($system_context);
 
-        $assig = assignment_db::moodbile_get_assignment($assigid);
+        $assig = assignment_db::get_assignment($assigid);
         if ($assig === false || $assig === null){
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+            throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
-        $submission = assignment_db::moodbile_get_submission($USER->id, $assigid);
+        $submission = assignment_db::get_submission($USER->id, $assigid);
         if ($submission === false || $submission === null) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Submission not found');
+            throw new moodle_exception('assignment:submissionnotfound', 'local_uniappws', '', '');
         }
 
         $cm = get_coursemodule_from_instance("assignment", $assigid);
@@ -115,27 +115,27 @@ class local_uniappws_assignment extends uniapp_external_api {
         self::validate_context($system_context);
 
         if (!$cm = get_coursemodule_from_instance('assignment', $assigid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+            throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
         if (self::submit_online_assignment_permission($assigid, $cm) === false){
-            throw new moodle_exception('nopermissions','moodbile_assignment', '',"Permission denied");
+            throw new moodle_exception('usernosubmit', 'assignment', '', '');
         }
         $ret=false;
-        $subid = assignment_db::moodbile_get_submission_id($USER->id, $assigid);
+        $subid = assignment_db::get_submission_id($USER->id, $assigid);
         if ( $subid !== false) {
             $data1 = new stdClass();
             $data1->id=$subid->id;
             $data1->data1=$data;
             $data1->data2=1;
             $data1->timemodified = time();
-            assignment_db::moodbile_update_submission($data1);
+            assignment_db::update_submission($data1);
             $ret = $subid->id;
         }
         else {
             $sub = self::prepare_new_submission( $USER->id, $assigid);
             $sub->data1=$data;
             $sub->data2=1;
-            $ret = assignment_db::moodbile_insert_submission($sub);
+            $ret = assignment_db::insert_submission($sub);
         }
         return array('subid' => $ret);
     }
@@ -145,8 +145,8 @@ class local_uniappws_assignment extends uniapp_external_api {
         if (!is_enrolled(get_context_instance(CONTEXT_MODULE, $cm->id), $USER->id, 'mod/assignment:submit')) {
             return false;
         }
-        $submission = assignment_db::moodbile_get_submission($USER->id, $assigid);
-        $assig = assignment_db::moodbile_get_assignment($assigid);
+        $submission = assignment_db::get_submission($USER->id, $assigid);
+        $assig = assignment_db::get_assignment($assigid);
         if ($assig->assignmenttype != 'online') {
             return false;
         }
@@ -201,11 +201,11 @@ class local_uniappws_assignment extends uniapp_external_api {
         self::validate_context($system_context);
 
         if (!$cm = get_coursemodule_from_instance('assignment', $assigid, $courseid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+            throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
 
         if (self::submit_singleupload_assignment_permissions($assigid, $cm, $courseid) === false){
-            throw new moodle_exception('nopermissions','moodbile_assignment', '',"Permission denied");
+            throw new moodle_exception('usernosubmit', 'assignment', '', '');
         }
 
         $fs = get_file_storage();
@@ -213,10 +213,10 @@ class local_uniappws_assignment extends uniapp_external_api {
         //we check if the file belongs to the user that is making the submission
         $file = $fs->get_file_by_id($fileid);
         if ($file->get_contextid() === get_context_instance(CONTEXT_USER, $USER->id)){
-            throw new moodle_exception('nopermissions','moodbile_assignment', '',"Permission denied");
+            throw new moodle_exception('nofiles', 'assignment', '', '');
         }
 
-        $subid = assignment_db::moodbile_get_submission_id($USER->id, $assigid);
+        $subid = assignment_db::get_submission_id($USER->id, $assigid);
         if ( $subid !== false) {
             $ret= $subid->id;
             $context= get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -224,7 +224,7 @@ class local_uniappws_assignment extends uniapp_external_api {
         }
         else {
             $sub = self::prepare_new_submission( $USER->id, $assigid);
-            $ret = assignment_db::moodbile_insert_submission($sub);
+            $ret = assignment_db::insert_submission($sub);
         }
         $cm = get_coursemodule_from_instance('assignment', $assigid, $courseid);
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -247,7 +247,7 @@ class local_uniappws_assignment extends uniapp_external_api {
         $data->id = $ret;
         $data->numfiles = 1;
         $data->timemodified = time();
-        assignment_db::moodbile_update_submission($data);
+        assignment_db::update_submission($data);
         return array('subid' => $ret);
     }
 
@@ -258,8 +258,8 @@ class local_uniappws_assignment extends uniapp_external_api {
             return false;
         }
         $filecount = self::count_files($assigid, $courseid);
-        $submission = assignment_db::moodbile_get_submission($USER->id, $assigid);
-        $assig = assignment_db::moodbile_get_assignment($assigid);
+        $submission = assignment_db::get_submission($USER->id, $assigid);
+        $assig = assignment_db::get_assignment($assigid);
         if ($assig->assignmenttype != 'uploadsingle') {
             return false;
         }
@@ -325,11 +325,11 @@ class local_uniappws_assignment extends uniapp_external_api {
         //$params = self::validate_parameters(self::submit_upload_assignment_parameters(), array('params' => $parameters));
 
         if (!$cm = get_coursemodule_from_instance('assignment', $assigid)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+            throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
 
         if (self::submit_upload_assignment_permissions($assigid, $cm) === false){
-            throw new moodle_exception('nopermissions','moodbile_assignment', '',"Permission denied");
+            throw new moodle_exception('usernosubmit', 'assignment', '', '');
         }
 
         $fs = get_file_storage();
@@ -339,10 +339,10 @@ class local_uniappws_assignment extends uniapp_external_api {
         foreach ($files as $uploadedfile) {
             $file = $fs->get_file_by_id($uploadedfile);
             if ($file->get_contextid() === $user_context ){
-                throw new moodle_exception('nopermissions','moodbile_assignment', '',"Permission denied");
+                throw new moodle_exception('nofiles', 'assignment', '', '');
             }
         }
-        $subid = assignment_db::moodbile_get_submission_id($USER->id, $assigid);
+        $subid = assignment_db::get_submission_id($USER->id, $assigid);
         if ( $subid !== false) {
             $ret = $subid->id;
             $context = get_context_instance(CONTEXT_MODULE, $cm->id);
@@ -350,7 +350,7 @@ class local_uniappws_assignment extends uniapp_external_api {
         }
         else {
             $sub = self::prepare_new_submission( $USER->id, $assigid);
-            $ret = assignment_db::moodbile_insert_submission($sub);
+            $ret = assignment_db::insert_submission($sub);
         }
 
         $cm = get_coursemodule_from_instance('assignment', $assigid);
@@ -380,17 +380,17 @@ class local_uniappws_assignment extends uniapp_external_api {
         if ($isfinal) {
             $data->data2 = ASSIGNMENT_STATUS_SUBMITTED;
         }
-        assignment_db::moodbile_update_submission($data);
+        assignment_db::update_submission($data);
         return array('subid' =>$ret);
     }
 
     private static function submit_upload_assignment_permissions($assigid, $cm) {
         global $USER;
-        $assig = assignment_db::moodbile_get_assignment($assigid);
+        $assig = assignment_db::get_assignment($assigid);
         if ($assig->assignmenttype != 'upload') {
             return false;
         }
-        $submission = assignment_db::moodbile_get_submission($USER->id, $assigid);
+        $submission = assignment_db::get_submission($USER->id, $assigid);
         if (is_enrolled(get_context_instance(CONTEXT_MODULE, $cm->id), $USER, 'mod/assignment:submit')
           and self::assignment_submission_is_open($assig)                       // assignment not closed yet
           and (empty($submission) or ($submission->userid == $USER->id))        // his/her own submission
@@ -441,9 +441,9 @@ class local_uniappws_assignment extends uniapp_external_api {
         //$params = self::validate_parameters(self::get_submission_files_parameters(), array('params' => $parameters));
 
         $cm = get_coursemodule_from_instance('assignment', $assigid);
-        $subid = assignment_db::moodbile_get_submission_id($USER->id, $assigid);
+        $subid = assignment_db::get_submission_id($USER->id, $assigid);
         if ($subid === false) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Submission not found');
+            throw new moodle_exception('nofiles', 'assignment', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         $contextid = $context->id;
@@ -454,7 +454,7 @@ class local_uniappws_assignment extends uniapp_external_api {
         $begin = $startpage*$n;
         $aux = array_slice($files, $begin, $begin+$n);
         if (empty($aux)) {
-           throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','No files found');
+			throw new moodle_exception('nofiles', 'assignment', '', '');
         }
 
         foreach ($aux as $file) {
@@ -488,16 +488,16 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         self::validate_context($system_context);
 
-        $assig = assignment_db::moodbile_get_assignment($assigid);
+        $assig = assignment_db::get_assignment($assigid);
         if ($assig === false || $assig === null){
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+			throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
         if (!$cm = get_coursemodule_from_instance('assignment', $assig->id)) {
-            throw new moodle_exception('generalexceptionmessage','moodbile_assignment', '','Assignment not found');
+			throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
         }
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         if (!has_capability('mod/assignment:view',$context)) {
-            throw new moodle_exception('nopermissions','moodbile_assignment', '',"Can't view assignment");
+            throw new moodle_exception('assignment:nopermissions', 'local_uniappws', '', '');
         }
 
         $assig = new Assignment($assig);

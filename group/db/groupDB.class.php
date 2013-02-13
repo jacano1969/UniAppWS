@@ -6,13 +6,13 @@ if (!defined('MOODLE_INTERNAL')) {
 
 class group_db {
 
-    public static function moodbile_get_group_by_groupid($groupid) {
+    public static function get_group_by_groupid($groupid) {
         global $DB;
 
         return $DB->get_record('groups', array('id' => $groupid));
     }
 
-    public static function moodbile_get_group_members_by_groupid($groupid, $startpage, $n) {
+    public static function get_group_members_by_groupid($groupid, $startpage, $n) {
         global $DB;
 
         $sql = "SELECT u.*
@@ -27,7 +27,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_group_members_by_groupingid($groupingid, $startpage, $n) {
+    public static function get_group_members_by_groupingid($groupingid, $startpage, $n) {
         global $DB;
 
         $sql = "SELECT u.*
@@ -44,7 +44,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_groups_by_courseid($courseid, $startpage, $n, $userid=0) {
+    public static function get_groups_by_courseid($courseid, $startpage, $n, $userid=0) {
         global $DB;
 
         $sqlparams = array();
@@ -67,7 +67,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_groups_by_groupingid($groupingid, $startpage, $n, $userid=0) {
+    public static function get_groups_by_groupingid($groupingid, $startpage, $n, $userid=0) {
         global $DB;
 
         $sqlparams = array();
@@ -91,7 +91,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_groupings_by_courseid($courseid, $startpage, $n) {
+    public static function get_groupings_by_courseid($courseid, $startpage, $n) {
         global $DB;
 
         $sql = "SELECT *
@@ -105,7 +105,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_groupings_by_courseid_and_userid($courseid, $startpage, $n, $userid) {
+    public static function get_groupings_by_courseid_and_userid($courseid, $startpage, $n, $userid) {
         global $DB;
 
         //@WARNING hand-made
@@ -124,7 +124,7 @@ class group_db {
         return $DB->get_records_sql($sql, $sqlparams, $begin, $n);
     }
 
-    public static function moodbile_get_course_by_groupid($groupid){
+    public static function get_course_by_groupid($groupid){
         global $DB;
 
         //@WARNING hand-made
@@ -139,7 +139,7 @@ class group_db {
         return $DB->get_record_sql($sql, $sqlparams);
     }
 
-    public static function moodbile_get_course_by_groupingid($groupingid) {
+    public static function get_course_by_groupingid($groupingid) {
         global $DB;
 
         //@WARNING hand-made
