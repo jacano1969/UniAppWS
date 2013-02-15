@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__).'/../config.php');
 require_once(UNIAPP_ROOT . '/course/courseStructure.class.php');
+require_once(UNIAPP_ROOT . '/course/moduleStructure.class.php');
 require_once(UNIAPP_ROOT . '/course/db/courseDB.class.php');
 
 class local_uniappws_course extends uniapp_external_api {
@@ -82,7 +83,7 @@ class local_uniappws_course extends uniapp_external_api {
         //Context validation
         //OPTIONAL but in most web service it should present
 		$context = self::get_context_by_token($_GET['wstoken']); 
-
+        //$context = get_context_instance(CONTEXT_SYSTEM);
         self::validate_context($context);
 
 		$course_context = get_context_instance(CONTEXT_COURSE, $courseid);
@@ -110,7 +111,7 @@ class local_uniappws_course extends uniapp_external_api {
     }
 
 	public static function extract_course_modules($courseid){
-		global $DB;
+		global $DB, $USER;
 		// list of possible modulenames		
 		//| assignment  |
 		//| certificate |
@@ -172,18 +173,7 @@ class local_uniappws_course extends uniapp_external_api {
      */
     public static function get_course_modules_returns() {
 		return new external_multiple_structure( 
-			new external_single_structure( array(
-					'id' => new external_value(PARAM_INT, 'course module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-					'instanceid' => new external_value(PARAM_INT, 'module id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-					'courseid' => new external_value(PARAM_INT, 'course id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-					'modname' => new external_value(PARAM_TEXT, 'module type', VALUE_REQUIRED, 'mod_unknown', NULL_NOT_ALLOWED),
-					'type' => new external_value(PARAM_TEXT, 'module title', VALUE_OPTIONAL),
-					'name' => new external_value(PARAM_TEXT, 'module title', VALUE_REQUIRED, 'name_unknow', NULL_NOT_ALLOWED),
-					'intro' => new external_value(PARAM_RAW, 'module intro', VALUE_OPTIONAL),
-					'timemodified' => new external_value(PARAM_INT, 'modification time', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
-					'section' => new external_value(PARAM_INT, 'section number', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
-					)	
-				) 
+                ModuleStructure::get_class_structure()
 			);
     }
 
