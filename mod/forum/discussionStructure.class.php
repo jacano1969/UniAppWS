@@ -7,7 +7,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once(dirname(__FILE__).'/../../config.php');
 require_once(UNIAPP_ROOT . '/lib/externalObject.class.php');
 
-class Discussion extends ExternalObject{
+class DiscussionStructure extends ExternalObject{
 
     function __construct($discussionrecord) {
         parent::__construct($discussionrecord);
@@ -23,7 +23,7 @@ class Discussion extends ExternalObject{
                 'userid'        => new external_value(PARAM_INT,    'user id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
                 'groupid'       => new external_value(PARAM_INT,    'id of the group', VALUE_REQUIRED, -1, NULL_NOT_ALLOWED),
                 'timemodified'  => new external_value(PARAM_INT,    'date of last modification', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
-            ), 'Discussion'
+            ), 'DiscussionStructure'
         );
     }
 }

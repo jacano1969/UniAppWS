@@ -29,9 +29,9 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         // check for view capability at course level
         $context = get_context_instance(CONTEXT_COURSE, $courseid);
-        require_capability('mod/assignment:view',$context);
+        require_capability('mod/assignment:view', $context);
 
-        require_once(UNIAPP_ROOT . '/course/db/courseDB.php');
+        require_once(UNIAPP_ROOT . '/course/db/courseDB.class.php');
         if (!$course = course_db::get_course_by_courseid($courseid)) {
             throw new moodle_exception('assignment:unknowncourseidnumber', 'local_uniappws', '', $courseid);
         }
@@ -366,7 +366,7 @@ class local_uniappws_assignment extends uniapp_external_api {
             'contextid' => $newcontextid,   // ID of context
             'component' => $newcomponent,   // usually = table name
             'filearea' => $newfilearea,     // usually = table name
-            'itemid' => $newitemid,               // usually = ID of row in table
+            'itemid' => $newitemid,         // usually = ID of row in table
         );
 
         foreach ($files as $fileid) {

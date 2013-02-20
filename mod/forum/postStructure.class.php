@@ -7,7 +7,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once(dirname(__FILE__).'/../../config.php');
 require_once(UNIAPP_ROOT . '/lib/externalObject.class.php');
 
-class ForumPost extends ExternalObject{
+class PostStructure extends ExternalObject{
 
     function __construct($postrecord) {
         parent::__construct($postrecord);
@@ -35,7 +35,7 @@ class ForumPost extends ExternalObject{
 					)
 				),
 				
-            ), 'Post'
+            ), 'PostStructure'
         );
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../config.php');
-require_once(UNIAPP_ROOT . '/mod/forum/forum.class.php');
-require_once(UNIAPP_ROOT . '/mod/forum/discussion.class.php');
-require_once(UNIAPP_ROOT . '/mod/forum/post.class.php');
+require_once(UNIAPP_ROOT . '/mod/forum/forumStructure.class.php');
+require_once(UNIAPP_ROOT . '/mod/forum/discussionStructure.class.php');
+require_once(UNIAPP_ROOT . '/mod/forum/postStructure.class.php');
 require_once(UNIAPP_ROOT . '/mod/forum/db/forumDB.class.php');
 
 class local_uniappws_forum extends uniapp_external_api {
@@ -43,7 +43,7 @@ class local_uniappws_forum extends uniapp_external_api {
         }
 
         $forum = forum_db::get_forum_by_id($forumid, $viewhidden);
-        $return = new Forum($forum);
+        $return = new ForumStructure($forum);
         $return = $return->get_data();
 
         return $return;
@@ -54,7 +54,7 @@ class local_uniappws_forum extends uniapp_external_api {
      * @return external_description
      */
     public static function get_forum_by_id_returns() {
-        return Forum::get_class_structure();
+        return ForumStructure::get_class_structure();
     }
 
 
@@ -94,7 +94,7 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $returnforums = array();
         foreach ($forums as $forum) {
-            $forum = new Forum($forum);
+            $forum = new ForumStructure($forum);
             $returnforums[] = $forum->get_data();
         }
         return $returnforums;
@@ -107,7 +107,7 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_forums_by_courseid_returns() {
         return
             new external_multiple_structure(
-                Forum::get_class_structure()
+                ForumStructure::get_class_structure()
             );
     }
 
@@ -137,7 +137,6 @@ class local_uniappws_forum extends uniapp_external_api {
      */
     public static function get_forums_by_userid($userid, $startpage, $n) {
 		global $DB;
-
 		$USER = $DB->get_record('user', array('id'=>$userid) );
 		if( !isset($USER) or empty($USER) ) {
 			throw new moodle_exception('user:notfound', 'local_uniappws', '', '');
@@ -173,7 +172,7 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $returnforums = array();
         foreach ($forums as $forum) {
-            $forum = new Forum($forum);
+            $forum = new ForumStructure($forum);
             $returnforums[] = $forum->get_data();
         }
         return $returnforums;
@@ -186,7 +185,7 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_forums_by_userid_returns() {
         return
             new external_multiple_structure(
-                Forum::get_class_structure()
+                ForumStructure::get_class_structure()
             );
     }
 
@@ -237,7 +236,7 @@ class local_uniappws_forum extends uniapp_external_api {
 		
         $returndiscussions = array();
         foreach ($discussions as $discussion) {
-            $discussion = new Discussion($discussion);
+            $discussion = new DiscussionStructure($discussion);
             $returndiscussions[] = $discussion->get_data();
         }
         return $returndiscussions;
@@ -250,7 +249,7 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_forum_discussions_returns() {
         return
             new external_multiple_structure(
-                Discussion::get_class_structure()
+                DiscussionStructure::get_class_structure()
             );
     }
 
@@ -286,7 +285,7 @@ class local_uniappws_forum extends uniapp_external_api {
         require_capability('mod/forum:viewdiscussion', $context);
 
         $discussion = forum_db::get_discussion_by_id($discid);
-        $return = new Discussion($discussion);
+        $return = new DiscussionStructure($discussion);
         $return = $return->get_data();
         return $return;
     }
@@ -296,7 +295,7 @@ class local_uniappws_forum extends uniapp_external_api {
      * @return external_description
      */
     public static function get_discussion_by_id_returns() {
-        return Discussion::get_class_structure();
+        return DiscussionStructure::get_class_structure();
     }
 
     /**
@@ -329,7 +328,7 @@ class local_uniappws_forum extends uniapp_external_api {
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
 
-        $return = new Forum($forum);
+        $return = new ForumStructure($forum);
         $return = $return->get_data();
         return $return;
     }
@@ -339,7 +338,7 @@ class local_uniappws_forum extends uniapp_external_api {
      * @return external_description
      */
     public static function get_forum_by_discussion_id_returns() {
-        return Forum::get_class_structure();
+        return ForumStructure::get_class_structure();
     }
 
 
@@ -373,7 +372,7 @@ class local_uniappws_forum extends uniapp_external_api {
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         self::validate_context($context);
 
-        $return = new Forum($forum);
+        $return = new ForumStructure($forum);
         $return = $return->get_data();
         return $return;
     }
@@ -383,7 +382,7 @@ class local_uniappws_forum extends uniapp_external_api {
      * @return external_description
      */
     public static function get_forum_by_postid_returns() {
-        return Forum::get_class_structure();
+        return ForumStructure::get_class_structure();
     }
 
 
@@ -548,7 +547,7 @@ class local_uniappws_forum extends uniapp_external_api {
 
         $returnposts = array();
         foreach ($posts as $post) {
-            $post = new ForumPost($post);
+            $post = new PostStructure($post);
 			$returnposts[] = $post->get_data();	
         }
 		
@@ -562,7 +561,7 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function get_posts_by_discussion_id_returns() {
         return
             new external_multiple_structure(
-                ForumPost::get_class_structure()
+                PostStructure::get_class_structure()
             );
     }
 
@@ -636,7 +635,7 @@ class local_uniappws_forum extends uniapp_external_api {
     public static function update_post_parameters() {
         return new external_function_parameters (
             array(
-                'post' => ForumPost::get_class_structure()
+                'post' => PostStructure::get_class_structure()
             )
         );
     }

@@ -7,7 +7,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once(dirname(__FILE__).'/../../config.php');
 require_once(UNIAPP_ROOT . '/lib/externalObject.class.php');
 
-class Forum extends ExternalObject{
+class ForumStructure extends ExternalObject{
 
     function __construct($forumrecord) {
         parent::__construct($forumrecord);
@@ -22,7 +22,7 @@ class Forum extends ExternalObject{
                 'name'          => new external_value(PARAM_TEXT,       'forum name', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'intro'         => new external_value(PARAM_RAW,        'forum description', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'timemodified'  => new external_value(PARAM_INT,        'date of last modification in seconds', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED)
-            ), 'Forum'
+            ), 'ForumStructure'
         );
     }
 }

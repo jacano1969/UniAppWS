@@ -13,7 +13,7 @@ require_once(UNIAPP_ROOT . '/course/db/courseDB.class.php');
 require_once(UNIAPP_ROOT . '/user/userStructure.class.php');
 require_once(UNIAPP_ROOT . '/lib.php');
 
-define('MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS', 2);
+define('UNIAPPWS_GROUP_ACCESS_SOME_GROUPS', 2);
 
 class local_uniappws_group extends uniapp_external_api {
 
@@ -234,7 +234,7 @@ class local_uniappws_group extends uniapp_external_api {
         if ($permission === true) {
             $groups = group_db::get_groups_by_courseid($courseid, $startpage, $n);
         }
-        elseif ($permission === MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS) {
+        elseif ($permission === UNIAPPWS_GROUP_ACCESS_SOME_GROUPS) {
             global $USER;
             $groups = group_db::get_groups_by_courseid($courseid, $startpage, $n, $USER->id);
         }
@@ -283,7 +283,7 @@ class local_uniappws_group extends uniapp_external_api {
         if ($permission === true) {
             $groups = group_db::get_groups_by_groupingid($groupingid, $startpage, $n);
         }
-        elseif ($permission === MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS) {
+        elseif ($permission === UNIAPPWS_GROUP_ACCESS_SOME_GROUPS) {
             global $USER;
             $groups = group_db::get_groups_by_groupingid($groupingid, $startpage, $n, $USER->id);
         }
@@ -327,7 +327,7 @@ class local_uniappws_group extends uniapp_external_api {
                 return true;
             }
             else if ($groupmode == SEPARATEGROUPS) {
-                return MOODBILESERVER_GROUP_ACCESS_SOME_GROUPS; //return some groups
+                return UNIAPPWS_GROUP_ACCESS_SOME_GROUPS; //return some groups
             }
             else { //mode NOGROUPS
                 return false;
