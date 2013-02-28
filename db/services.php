@@ -309,7 +309,7 @@ $functions = array(
 			'methodname'  => 'get_assignments_by_courseid',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Gets course assignments; required parameters: courseid; optional parameters: startpage, n (page number)',
-			'type'        => 'read',
+			'type'		=> 'read',
 			'capabilities'=> 'mod/assignment:view',
 		),
 
@@ -318,7 +318,7 @@ $functions = array(
 			'methodname'  => 'get_assignment_by_assigid',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Gets an assignment by its id; required parameters: assigid',
-			'type'        => 'read',
+			'type'		=> 'read',
 			'capabilities'=> 'mod/assignment:view',
 		),
 
@@ -327,7 +327,7 @@ $functions = array(
 			'methodname'  => 'get_submission_by_assigid',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Gets a submission; required parameters: assigid',
-			'type'        => 'read',
+			'type'		=> 'read',
 			'capabilities'=> '',
 		),
 
@@ -336,7 +336,7 @@ $functions = array(
 			'methodname'  => 'get_submission_files',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Gets submission files; required parameters: assigid; optional parameters: startpage, n (page number)',
-			'type'        => 'read',
+			'type'		=> 'read',
 			'capabilities'=> '',
 		),
 
@@ -345,7 +345,7 @@ $functions = array(
 			'methodname'  => 'submit_online_assignment',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Submits an online assignment; required parameters: assigid, data',
-			'type'        => 'write',
+			'type'		=> 'write',
 			'capabilities'=> 'mod/assignment:submit',
 		),
 
@@ -354,7 +354,7 @@ $functions = array(
 			'methodname'  => 'submit_singleupload_assignment',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Submits a singleupload assignment; required parameters: courseid, assigid, fileid',
-			'type'        => 'write',
+			'type'		=> 'write',
 			'capabilities'=> 'mod/assignment:submit',
 		),
 
@@ -363,7 +363,7 @@ $functions = array(
 			'methodname'  => 'submit_upload_assignment',
 			'classpath'   => 'local/uniappws/mod/assignment/externallib.php',
 			'description' => 'Submits an upload assignment; required parameters: assigid, isfinal(boolean value, if true it is final submission otherwise is draft), files(array of fileids)',
-			'type'        => 'write',
+			'type'		=> 'write',
 			'capabilities'=> 'mod/assignment:submit',
 		),
 		// folder
@@ -374,6 +374,52 @@ $functions = array(
 			'description' => 'Given the id gets the folder content',
 			'type'		=> 'read',
 			'capabilities'=> 'mod/folder:view',
+		),
+
+		// grade
+		'local_uniappws_get_grade_items_by_userid' =>array(
+			'classname'   => 'local_uniappws_grade',
+			'methodname'  => 'get_grade_items_by_userid',
+			'classpath'   => 'local/uniappws/grade/externallib.php',
+			'description' => 'Returns the grade items of a user',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_get_grade_items_by_courseid' =>array(
+			'classname'   => 'local_uniappws_grade',
+			'methodname'  => 'get_grade_items_by_courseid',
+			'classpath'   => 'local/uniappws/grade/externallib.php',
+			'description' => 'Returns the grade items of a user',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_get_grades_by_itemid' =>array(
+			'classname'   => 'local_uniappws_grade',
+			'methodname'  => 'get_grades_by_itemid',
+			'classpath'   => 'local/uniappws/grade/externallib.php',
+			'description' => 'Returns the grades corresponding to a particular grade item',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_get_user_grade_by_itemid' =>array(
+			'classname'   => 'local_uniappws_grade',
+			'methodname'  => 'get_user_grade_by_itemid',
+			'classpath'   => 'local/uniappws/grade/externallib.php',
+			'description' => 'Returns the grades corresponding to a particular grade item',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_get_user_grades_by_courseid' =>array(
+			'classname'   => 'local_uniappws_grade',
+			'methodname'  => 'get_user_grades_by_courseid',
+			'classpath'   => 'local/uniappws/grade/externallib.php',
+			'description' => 'Returns the user grades in the course',
+			'type'		=> 'read',
+			'capabilities'=> '',
 		),
 );
 
