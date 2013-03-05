@@ -5,7 +5,7 @@ require_once(dirname(__FILE__).'/../config.php');
 
 class local_uniappws_files extends uniapp_external_api {
 
-    public static function upload_file_parameters() {
+    public static function upload_private_file_parameters() {
         return new external_function_parameters(
             array(
                 'filename' => new external_value(PARAM_FILE, 'Filename', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
@@ -14,13 +14,13 @@ class local_uniappws_files extends uniapp_external_api {
         );
     }
 
-    public static function upload_file($filename, $filedata) {
+    public static function upload_private_file($filename, $filedata) {
         global $USER;
 
         $system_context = get_context_instance(CONTEXT_SYSTEM);
         self::validate_context($system_context);
 
-        //$params = self::validate_parameters(self::upload_file_parameters(), array('params' => $parameters));
+        //$params = self::validate_parameters(self::upload_private_file_parameters(), array('params' => $parameters));
 
         $user_context = get_context_instance(CONTEXT_USER, $USER->id);
         $contextid = $user_context->id;
@@ -29,7 +29,7 @@ class local_uniappws_files extends uniapp_external_api {
         $itemid = 0;
         $filepath = '/';
 
-        $dir = make_upload_directory('temp/wsupload');
+        $dir = make_temp_directory("wsupload");
 
         if (empty($filename)) {
             $filenamets = uniqid('wsupload').'_'.time().'.tmp';
@@ -42,8 +42,10 @@ class local_uniappws_files extends uniapp_external_api {
         } else {
             $savedfilepath = $dir.$filenamets;
         }
+		// remove the overhead string 'data:mime/type;base64,' if present
+		$decoded_file_data = base64_decode(preg_replace("-^data:.*;base64,-",'',$filedata));
 
-        file_put_contents($savedfilepath, base64_decode($filedata));
+        file_put_contents($savedfilepath, base64_decode($decoded_file_data));
         unset($filedata);
         $browser = get_file_browser();
 
@@ -69,7 +71,95 @@ class local_uniappws_files extends uniapp_external_api {
         }
     }
 
-    public static function upload_file_returns() {
+    public static function upload_draft_file_parameters() {
+        return new external_function_parameters(
+            array(
+                'filename' => new external_value(PARAM_FILE, 'Filename', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                'filedata' => new external_value(PARAM_TEXT, 'Base64 encoded file data', VALUE_REQUIRED, '', NULL_NOT_ALLOWED)
+            )
+        );
+    }
+
+    public static function upload_draft_file($filename, $filedata) {
+        global $USER, $CFG;
+
+        $system_context = get_context_instance(CONTEXT_SYSTEM);
+        self::validate_context($system_context);
+
+        $user_context = get_context_instance(CONTEXT_USER, $USER->id);
+
+        $dir = make_temp_directory("wsupload");
+
+        if (empty($filename)) {
+            $filenamets = uniqid('wsupload').'_'.time().'.tmp';
+        } else {
+            $filenamets = $filename;
+        }
+
+        if (file_exists($dir.$filenamets)) {
+            $savedfilepath = $dir.uniqid('m').$filenamets;
+        } else {
+            $savedfilepath = $dir.$filenamets;
+        }
+		// remove the overhead string 'data:mime/type;base64,' if present
+		//print_r(preg_replace("-^data:.*;base64,-",'',$filedata));
+		$decoded_file_data = base64_decode(preg_replace("-^data:.*;base64,-",'',$filedata));
+
+        file_put_contents($savedfilepath, $decoded_file_data);
+        unset($filedata);
+        $browser = get_file_browser();
+
+        $fs = get_file_storage();
+		$fileinfo = array(
+			'contextid' => $user_context->id,
+			'component' => 'user',
+			'filearea' => 'draft',
+			'itemid' => 0,
+			'filepath' => '/',
+			'filename' => $filename
+		);
+
+		// remove the older draft if it exists
+		$file = $fs->get_file(
+			$fileinfo['contextid'],
+			$fileinfo['component'],
+			$fileinfo['filearea'],
+			$fileinfo['itemid'],
+			$fileinfo['filepath'],
+			$fileinfo['filename']
+		);
+
+		// Delete it if it exists
+		if ($file) { $file->delete(); }
+
+        $info = $fs->create_file_from_pathname($fileinfo, $savedfilepath);
+
+		$file = $fs->get_file(
+			$fileinfo['contextid'],
+			$fileinfo['component'],
+			$fileinfo['filearea'],
+			$fileinfo['itemid'],
+			$fileinfo['filepath'],
+			$fileinfo['filename']
+		);
+
+		if ($file) {
+            return array('fileid'=>$file->get_id(), 'filename'=>$filename);
+		} else {
+            throw new moodle_exception('nofile');
+		}
+    }
+
+    public static function upload_draft_file_returns() {
+        return new external_single_structure(
+             array(
+                 'fileid' => new external_value(PARAM_INT, 'File id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
+                 'filename' => new external_value(PARAM_FILE, 'Filename', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+             )
+        );
+    }
+
+    public static function upload_private_file_returns() {
         return new external_single_structure(
              array(
                  'fileid' => new external_value(PARAM_INT, 'File id', VALUE_REQUIRED, 0, NULL_NOT_ALLOWED),
@@ -194,6 +284,7 @@ class local_uniappws_files extends uniapp_external_api {
         if (!$f) {
            throw new moodle_exception('nofile');
         }
+
         if ($f->get_filesize() == 0) {
             throw new moodle_exception('invalidfile');
         }

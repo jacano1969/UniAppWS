@@ -267,11 +267,20 @@ $functions = array(
 		),
 
 		// files
-		'local_uniappws_files_upload' => array(
+		'local_uniappws_files_upload_private_file' => array(
 			'classname'   => 'local_uniappws_files',
-			'methodname'  => 'upload_file',
+			'methodname'  => 'upload_private_file',
 			'classpath'   => 'local/uniappws/files/externallib.php',
-			'description' => 'Uploads a file',
+			'description' => 'Uploads a private file',
+			'type'		=> 'write',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_files_upload_draft_file' => array(
+			'classname'   => 'local_uniappws_files',
+			'methodname'  => 'upload_draft_file',
+			'classpath'   => 'local/uniappws/files/externallib.php',
+			'description' => 'Uploads a draft file; useful for file submissions in assignments and attachments',
 			'type'		=> 'write',
 			'capabilities'=> '',
 		),
