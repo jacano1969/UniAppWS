@@ -25,8 +25,6 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         self::validate_context($system_context);
 
-        //$params = self::validate_parameters(self::get_assignments_by_courseid_parameters(), array('courseid' => $parameters));
-
         // check for view capability at course level
         $context = get_context_instance(CONTEXT_COURSE, $courseid);
         require_capability('mod/assignment:view', $context);
@@ -317,6 +315,7 @@ class local_uniappws_assignment extends uniapp_external_api {
     public static function submit_upload_assignment($assigid, $isfinal, $files) {
         global $USER;
         global $CFG;
+        global $DB;
         require_once($CFG->dirroot.'/mod/assignment/type/upload/assignment.class.php');
         $system_context = get_context_instance(CONTEXT_SYSTEM);
 
@@ -326,6 +325,12 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         if (!$cm = get_coursemodule_from_instance('assignment', $assigid)) {
             throw new moodle_exception('assignment:notfound', 'local_uniappws', '', '');
+        }
+
+		$assignment = assignment_db::get_assignment($assigid);
+
+        if ($assignment->var1 < count($files)) {
+            throw new moodle_exception('assignment:maxfilesnumberexceeded', 'local_uniappws', '', '');
         }
 
         if (self::submit_upload_assignment_permissions($assigid, $cm) === false){
@@ -375,7 +380,7 @@ class local_uniappws_assignment extends uniapp_external_api {
 
         $data = new stdClass();
         $data->id = $ret;
-        $data->numfiles = 0;
+        $data->numfiles = count($files);
         $data->timemodified = time();
         if ($isfinal) {
             $data->data2 = ASSIGNMENT_STATUS_SUBMITTED;

@@ -13,6 +13,7 @@ $string['choice:unknownerror'] = 'Activity Choice: unknown error.';
 $string['assignment:unknowncourseidnumber'] = 'Activity Assignment: unknown course id: {a}';
 $string['assignment:notfound'] = 'Activity Assignment not found.';
 $string['assignment:nopermissions'] = 'No permission to access the assignment.';
+$string['assignment:maxfilesnumberexceeded'] = 'Allowed number of files exceeded.';
 $string['folder:notfound'] = 'Resource Folder not found.';
 $string['forum:notfound'] = 'Activity Forum not found.';
 $string['forum:nopermissions'] = 'No permission to access the forum.';
