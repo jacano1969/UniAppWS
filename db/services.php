@@ -375,6 +375,26 @@ $functions = array(
 			'type'		=> 'write',
 			'capabilities'=> 'mod/assignment:submit',
 		),
+
+		// scorm
+		'local_uniappws_scorm_get_package' => array(
+			'classname'   => 'local_uniappws_scorm',
+			'methodname'  => 'get_package',
+			'classpath'   => 'local/uniappws/mod/scorm/externallib.php',
+			'description' => 'Gets the scorm package; required parameters: scormid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
+		'local_uniappws_scorm_get_status' => array(
+			'classname'   => 'local_uniappws_scorm',
+			'methodname'  => 'get_status',
+			'classpath'   => 'local/uniappws/mod/scorm/externallib.php',
+			'description' => 'Gets the scorm status; required parameters: scormid',
+			'type'		=> 'read',
+			'capabilities'=> '',
+		),
+
 		// folder
 		'local_uniappws_folder_get_folder_by_id' => array(
 			'classname'   => 'local_uniappws_folder',
